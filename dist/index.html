@@ -2,10 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Conheça a Stark, equipe de robótica do Colégio SESI de Apucarana, Paraná. Explore o projeto em 3D, o uniforme e os bastidores da equipe.">
+  <meta name="description" content="Conheça a STARK, equipe de robótica do Colégio SESI de Apucarana, Paraná. Explore o projeto em 3D, o uniforme e os bastidores da equipe.">
   <meta name="stark-content" content="data/equipe.json">
-  <meta name="theme-color" content="#08152c"><title>Stark — Robótica de Apucarana</title>
+  <meta name="theme-color" content="#08152c"><title>STARK — Robótica de Apucarana</title>
   <link rel="icon" href="assets/brand/favicon.png"><link rel="stylesheet" href="css/site.css">
+  <script defer src="js/preferences.js"></script>
   <script defer src="js/robo-cad.js"></script><script defer src="js/site.js"></script><script defer src="js/uniforme.js"></script>
 </head>
 <body>
@@ -28,27 +29,37 @@
   <symbol id="photo" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 18 5-5 4 4 5-7 5 7"/></symbol>
 </defs></svg>
 <header class="header"><div class="wrap header-row">
-  <a class="brand" href="#inicio" aria-label="Stark Apucarana, início"><img src="assets/brand/marca.jpg" alt="STARK Apucarana-PR"></a>
-  <button id="menu-toggle" aria-controls="menu" aria-expanded="false" class="menu-toggle">Menu <span>☰</span></button>
+  <a class="brand" href="#inicio" aria-label="STARK Apucarana, início"><img src="assets/brand/marca.jpg" alt="STARK Apucarana-PR"></a>
   <nav id="menu" aria-label="Navegação principal">
     <a href="#inicio" aria-current="location">Início</a><a href="#sobre">Sobre</a><a href="#galeria">Galeria</a><a href="#competicoes">Competições</a><a href="#integrantes">Integrantes</a><a href="#apoiadores">Apoiadores</a><a class="nav-contact" href="#contato">Contato <svg><use href="#external"/></svg></a>
   </nav>
+  <div class="header-tools">
+<div class="site-settings">
+  <button type="button" data-language aria-label="Switch to English" title="Switch to English"><span class="language-flag" aria-hidden="true"></span></button>
+  <button type="button" data-theme-toggle aria-label="Modo claro" aria-pressed="false" title="Modo claro"><span aria-hidden="true">☀</span></button>
+  <button type="button" data-reactor-toggle aria-label="Reator do cursor" aria-pressed="true" title="Reator do cursor"><span class="reactor-symbol" aria-hidden="true"></span></button>
+</div>  <button id="menu-toggle" aria-controls="menu" aria-expanded="false" class="menu-toggle">Menu <span>☰</span></button>
+  </div>
 </div></header>
 <main id="principal">
 <section id="inicio" class="hero"><div class="hero-inner wrap">
-  <div class="hero-copy"><div class="eyebrow"><span class="hero-wordmark"><img src="assets/brand/marca.jpg" alt="Stark"></span><span class="word-divider"></span> EQUIPE DE ROBÓTICA</div>
+  <div class="hero-copy"><div class="eyebrow"><a class="hero-wordmark" href="#sobre"><span class="hero-helmet" aria-hidden="true"><span></span></span>STARK</a><span class="word-divider"></span> EQUIPE DE ROBÓTICA</div>
     <div class="hero-title">
-      <h1>Robótica em<br><em>movimento.</em></h1>
-      <span class="hero-robot-track" aria-hidden="true">
+      <h1><span data-letters>Robótica em</span><br><em data-letters>movimento.</em></h1>
+      <span class="hero-robot-flight" aria-hidden="true">
         <span class="hero-robot">
           <span class="hero-robot-head"></span>
-          <span class="hero-robot-leg"></span>
-          <span class="hero-robot-leg"></span>
+          <span class="hero-robot-body"></span>
+          <span class="hero-robot-thrusters"></span>
         </span>
       </span>
     </div>
-    <p>Na arena, o J.A.R.V.I.S segue a linha sozinho. Por trás de cada curva está a Stark, equipe do Colégio SESI de Apucarana que constrói e programa o robô para a Olimpíada Brasileira de Robótica.</p>
+    <p>Na arena, o J.A.R.V.I.S segue a linha sozinho. Por trás de cada curva está a STARK, equipe do Colégio SESI de Apucarana que constrói e programa o robô para a Olimpíada Brasileira de Robótica.</p>
     <div class="actions"><button class="btn primary" data-open="robot-dialog">Conheça o J.A.R.V.I.S <svg><use href="#external"/></svg></button><a href="#sobre" class="text-link">Sobre a equipe <span>↓</span></a></div>
+    <figure class="stark-quotes">
+      <blockquote><p>“Eu sou o Homem de Ferro.”</p><p>“Às vezes, é preciso correr antes de andar.”</p></blockquote>
+      <figcaption>— Tony Stark</figcaption>
+    </figure>
     <div class="location"><svg><use href="#pin"/></svg> Apucarana, Paraná</div>
   </div>
   <div class="cad-frame">
@@ -70,7 +81,7 @@
     <div class="media-filters" role="group" aria-label="Filtrar galeria"><button type="button" data-filter="tudo" aria-pressed="true">Tudo</button><button type="button" data-filter="foto" aria-pressed="false">Fotos</button><button type="button" data-filter="video" aria-pressed="false">Vídeos</button></div>
     <figure id="media-frame"></figure><div class="slider-bottom"><span id="media-caption"></span><div class="arrows"><button data-gallery="-1" aria-label="Mídia anterior">←</button><button data-gallery="1" aria-label="Próxima mídia">→</button></div></div>
   </article>
-  <article class="jersey panel"><div class="section-kicker"><span></span> UNIFORME</div><h2>O manto da Stark<span>.</span></h2><div id="camisa3d"></div></article>
+  <article class="jersey panel"><div class="section-kicker"><span></span> UNIFORME</div><h2>O manto da STARK<span>.</span></h2><div id="camisa3d"></div></article>
 </div></section>
 <section id="competicoes" class="section competitions"><div class="wrap">
 <div class="section-kicker"><span></span> NA ARENA</div><h2>Competições<span>.</span></h2>
@@ -82,13 +93,19 @@
 </div></section>
 <section id="integrantes" class="section"><div class="wrap duo">
 <div class="panel member-panel"><div class="panel-top"><div class="section-kicker"><span></span> EQUIPE STARK</div><span class="counter" id="member-count" aria-live="off">01 / 04</span></div><h2>Integrantes<span>.</span></h2>
-<div class="member-stage" id="member" role="region" aria-roledescription="carrossel" aria-label="Integrantes da Stark"></div>
+<div class="member-stage" id="member" role="region" aria-roledescription="carrossel" aria-label="Integrantes da STARK"></div>
 <div class="member-controls"><button class="round" data-member="-1" aria-label="Integrante anterior">←</button><button id="member-play" type="button">Pausar rotação</button><button class="round" data-member="1" aria-label="Próximo integrante">→</button></div></div>
 <div class="panel" id="apoiadores"><div class="section-kicker"><span></span> PARCERIAS</div><h2>Apoiadores<span>.</span></h2><div class="supporter-grid" id="supporters"></div></div>
 </div></section>
-<section id="contato" class="section contact"><div class="wrap contact-inner"><div class="section-kicker"><span></span> CONTATO</div><h2>Vamos construir<br><em>algo juntos?</em></h2><p>Acompanhe os projetos da Stark ou converse com a equipe.</p><div class="contact-buttons"><a class="btn primary" href="mailto:equipe.stark.pr@gmail.com"><svg><use href="#mail"/></svg> Enviar e-mail</a></div><div class="socials"><a href="https://www.instagram.com/equipe_stark_pr?cnvx=eDJ5bDJmbnc4YXA5" target="_blank" rel="noopener"><img src="assets/brand/instagram.jpg" alt="">Instagram ↗</a><a href="https://github.com/StarkPR" target="_blank" rel="noopener"><img src="assets/brand/github.png" alt="">GitHub ↗</a></div></div></section>
+<section id="contato" class="section contact"><div class="wrap contact-inner"><div class="section-kicker"><span></span> CONTATO</div><h2>Vamos construir<br><em>algo juntos?</em></h2><p>Acompanhe os projetos da STARK ou converse com a equipe.</p><div class="contact-buttons"><a class="btn primary" href="mailto:equipe.stark.pr@gmail.com"><svg><use href="#mail"/></svg> Enviar e-mail</a></div><div class="socials"><a href="https://www.instagram.com/equipe_stark_pr?cnvx=eDJ5bDJmbnc4YXA5" target="_blank" rel="noopener"><img src="assets/brand/instagram.jpg" alt="">Instagram ↗</a><a href="https://github.com/StarkPR" target="_blank" rel="noopener"><img src="assets/brand/github.png" alt="">GitHub ↗</a></div></div></section>
 </main>
-<footer><div class="wrap"><a class="brand" href="#inicio" aria-label="Stark, voltar ao início"><img src="assets/brand/marca.jpg" alt="STARK Apucarana-PR"></a><span>Robótica &nbsp;/&nbsp; Apucarana, PR</span><a href="#inicio">Voltar ao topo ↑</a></div></footer>
+<footer><div class="wrap"><a class="brand" href="#inicio" aria-label="STARK, voltar ao início"><img src="assets/brand/marca.jpg" alt="STARK Apucarana-PR"></a><span>Robótica &nbsp;/&nbsp; Apucarana, PR</span><a href="#inicio">Voltar ao topo ↑</a></div></footer>
+<dialog id="gallery-photo-dialog" aria-labelledby="gallery-photo-caption">
+  <div class="gallery-photo-surface">
+    <button type="button" class="round gallery-photo-close" data-close aria-label="Fechar foto" autofocus>×</button>
+    <figure><img id="gallery-full-photo" alt=""><figcaption id="gallery-photo-caption"></figcaption></figure>
+  </div>
+</dialog>
 <dialog id="robot-dialog"><div class="dialog-head"><div><div class="section-kicker"><span></span> VISUALIZADOR CAD</div><h2>J.A.R.V.I.S<span>.</span></h2></div><button class="round" data-close aria-label="Fechar visualizador">×</button></div><div class="robot-layout"><div><div class="big-stage"><canvas tabindex="0" id="large-cube" aria-label="Cubo tridimensional. Use as setas para girar e mais ou menos para ampliar."></canvas></div><div class="dialog-foot"><span>Arraste para girar · Cubo de referência</span><div class="arrows"><button data-zoom="-1" aria-label="Diminuir zoom">−</button><button data-zoom="1" aria-label="Aumentar zoom">+</button><button data-reset aria-label="Restaurar vista">↺</button><button data-inspect aria-label="Abrir CAD em tela cheia">⛶</button></div></div></div>
 <aside class="robot-specs"><h3>Ficha do robô</h3><dl><dt>Tipo de robô</dt><dd data-spec="tipo"></dd><dt>Materiais e componentes</dt><dd data-spec="componentes"></dd><dt>Programação</dt><dd data-spec="programacao"></dd></dl></aside></div></dialog>
 <dialog id="cad-dialog" aria-labelledby="cad-title"><div class="cad-workspace" id="cad-workspace">

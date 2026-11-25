@@ -1,8 +1,9 @@
 (() => {
   const $ = selector => document.querySelector(selector);
+  const {t, inEnglish} = window.STARK_UI;
   function el(tag, text, className) {
     const item = document.createElement(tag);
-    if(text) item.textContent = text;
+    if(text) item.textContent = t(text);
     if(className) item.className = className;
     return item;
   }
@@ -37,7 +38,7 @@
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}));
   function number(n){return String(n).padStart(2,'0');}
-  function photo(src,alt){const img=el('img');img.src=src;img.alt=alt;img.loading='lazy';return img;}
+  function photo(src,alt){const img=el('img');img.src=src;img.alt=t(alt);img.loading='lazy';return img;}
   // Reveal each section once. The content stays visible when animation is unavailable.
   if ('IntersectionObserver' in window && typeof Element.prototype.animate === 'function') {
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -56,6 +57,28 @@
     const frame = $('#media-frame');
     const filters = [...document.querySelectorAll('[data-filter]')];
     const arrows = [...document.querySelectorAll('[data-gallery]')];
+    const dialog = $('#gallery-photo-dialog');
+    const surface = $('.gallery-photo-surface');
+    const fullPhoto = $('#gallery-full-photo');
+    const fullCaption = $('#gallery-photo-caption');
+    let enteredFullscreen = false;
+    async function expandPhoto(item) {
+      fullPhoto.src = item.arquivo;
+      fullCaption.textContent = t(item.legenda);
+      dialog.showModal();
+      try {
+        await surface.requestFullscreen?.();
+      } catch { /* The viewport-sized dialog also works without native fullscreen. */ }
+    }
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement === surface) enteredFullscreen = true;
+      else if (enteredFullscreen && dialog.open) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      enteredFullscreen = false;
+      if (document.fullscreenElement === surface) document.exitFullscreen().catch(() => {});
+      fullPhoto.removeAttribute('src');
+    });
     let selected = items;
     let index = 0;
     let transition = [];
@@ -68,17 +91,23 @@
       frame.replaceChildren();
       let next;
       $('#gallery-count').textContent = number(index + 1) + ' / ' + number(selected.length);
-      $('#media-caption').textContent = item.legenda;
+      $('#media-caption').textContent = t(item.legenda);
       if (item.tipo === 'video' && item.arquivo) {
         const video = el('video');
         video.src = item.arquivo;
         video.controls = true;
         video.playsInline = true;
         video.preload = 'metadata';
-        video.setAttribute('aria-label', item.legenda);
+        video.setAttribute('aria-label', t(item.legenda));
         next = video;
       } else if (item.arquivo) {
-        next = photo(item.arquivo, item.legenda);
+        next = el('button', null, 'gallery-zoom');
+        next.type = 'button';
+        next.setAttribute('aria-label', t('Ver foto em tela cheia') + ' · ' + t(item.legenda));
+        const expand = el('span', '⛶', 'gallery-zoom-icon');
+        expand.setAttribute('aria-hidden', 'true');
+        next.append(photo(item.arquivo, item.legenda), expand);
+        next.onclick = () => expandPhoto(item);
       } else {
         const slot = el('span', null, 'placeholder');
         const video = item.tipo === 'video';
@@ -147,7 +176,7 @@
       portrait.href = person.instagram;
       portrait.target = '_blank';
       portrait.rel = 'noopener';
-      portrait.setAttribute('aria-label', 'Abrir Instagram de ' + person.nome + ' em nova aba');
+      portrait.setAttribute('aria-label', inEnglish ? 'Open ' + person.nome + '’s Instagram in a new tab' : 'Abrir Instagram de ' + person.nome + ' em nova aba');
       const initials = person.nome.split(/\s+/).map(part => part[0]).slice(0, 2).join('');
       portrait.append(person.foto ? photo(person.foto, '') : el('span', initials, 'monogram'));
       portrait.append(el('span', 'Instagram ↗', 'profile-tag'));
@@ -223,7 +252,7 @@
     function setPlaying(value) {
       playing = value;
       target = null;
-      player.textContent = playing ? 'Pausar rotação' : 'Iniciar rotação';
+      player.textContent = t(playing ? 'Pausar rotação' : 'Iniciar rotação');
       counter.setAttribute('aria-live', playing ? 'off' : 'polite');
       sync();
     }
@@ -245,7 +274,7 @@
       if (event.imagem) $('#comp-image').append(photo(event.imagem,event.nome));
     }
     const list = $('#award-list');
-    if (!data.premios.length) list.append(el('p','As premiações da Stark serão publicadas aqui.'));
+    if (!data.premios.length) list.append(el('p','As premiações da STARK serão publicadas aqui.'));
     for (const prize of data.premios) {
       const record = el('article');
       record.append(el('h4',prize.titulo), el('p',prize.edicao));
@@ -273,12 +302,12 @@
   }
 
   function render(data) {
-    document.querySelectorAll('[data-field]').forEach(p => p.textContent = data.sobre[p.dataset.field] || 'inserir texto');
-    if (data.sobre.fundacao) $('[data-field=quem]').append(el('small', ' · Fundação em ' + data.sobre.fundacao));
+    document.querySelectorAll('[data-field]').forEach(p => p.textContent = t(data.sobre[p.dataset.field] || 'inserir texto'));
+    if (data.sobre.fundacao) $('[data-field=quem]').append(el('small', (inEnglish ? ' · Founded in ' : ' · Fundação em ') + data.sobre.fundacao));
     renderGallery(data.galeria);
     renderMembers(data.integrantes);
     renderArena(data);
-    document.querySelectorAll('[data-spec]').forEach(row => row.textContent = data.robo[row.dataset.spec] || '');
+    document.querySelectorAll('[data-spec]').forEach(row => row.textContent = t(data.robo[row.dataset.spec] || ''));
     for (const entry of data.diario) $('#diary-body').append(el('h3',entry.titulo), el('p',entry.texto));
     for (const supporter of data.apoiadores) {
       const tile = el('figure', null, 'supporter-tile');

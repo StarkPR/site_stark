@@ -40,7 +40,7 @@ const ARQUIVO_CAD = null;
     function setSpin(enabled) {
       spinning = enabled;
       previous = 0;
-      if (inspector) spinButton.textContent = enabled ? 'Pausar rotação' : 'Girar modelo';
+      if (inspector) spinButton.textContent = window.STARK_UI.t(enabled ? 'Pausar rotação' : 'Girar modelo');
       draw();
     }
     const ctx = canvas.getContext('2d');
@@ -236,7 +236,7 @@ const ARQUIVO_CAD = null;
     else if (enteredFullscreen) {enteredFullscreen=false;if(dialog.open) dialog.close();}
   });
   if(ARQUIVO_CAD)fetch(ARQUIVO_CAD).then(r=>{if(!r.ok)throw Error(r.status);return r.text();}).then(source=>{
-    model=parseObj(source);document.querySelector('.cad-foot strong').textContent='Robô da Stark';
-    document.querySelector('#robot-dialog .dialog-foot span').textContent='Arraste para girar · Robô da Stark';inspector.loadParts();displays.forEach(d=>d.draw());
+    model=parseObj(source);document.querySelector('.cad-foot strong').textContent=window.STARK_UI.t('Robô da STARK');
+    document.querySelector('#robot-dialog .dialog-foot span').textContent=window.STARK_UI.t('Arraste para girar · Robô da STARK');inspector.loadParts();displays.forEach(d=>d.draw());
   }).catch(error=>console.warn('Não foi possível carregar o CAD.',error));
 })();

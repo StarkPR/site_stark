@@ -10,12 +10,12 @@
     {
       "tipo": "foto",
       "arquivo": "assets/galeria/equipe-na-competicao.webp",
-      "legenda": "Equipe Stark reunida na competição"
+      "legenda": "Equipe STARK"
     },
     {
       "tipo": "foto",
       "arquivo": "assets/galeria/robo-com-farois.webp",
-      "legenda": "Robô da Stark com os faróis acesos"
+      "legenda": "Nosso J.A.R.V.I.S. 2026"
     },
     {
       "tipo": "foto",
@@ -25,17 +25,17 @@
     {
       "tipo": "foto",
       "arquivo": "assets/galeria/integrante-com-robo.webp",
-      "legenda": "Integrante da Stark apresenta o robô"
+      "legenda": "Integrante da STARK prestes a entrar para a pista."
     },
     {
       "tipo": "foto",
       "arquivo": "assets/galeria/programacao.webp",
-      "legenda": "Equipe Stark programando nos bastidores"
+      "legenda": "Equipe STARK programando nos bastidores"
     },
     {
       "tipo": "video",
       "arquivo": "assets/galeria/bastidores.mp4",
-      "legenda": "Bastidores da equipe Stark"
+      "legenda": "STARK recebendo a premiação de melhor escola privada."
     }
   ],
   "competicoes": [

@@ -18,7 +18,7 @@
     #camisa3d [hidden] {display:none}
   `;
   document.head.append(css);
-  root.innerHTML = '<div class="uniform-stage" tabindex="0" role="group" aria-label="Camisa da Stark em 3D. Arraste ou use as setas do teclado para girar."><img class="uniform-poster" alt="Uniforme azul-marinho da Stark, com os escudos da equipe e do SESI." draggable="false"><canvas hidden aria-hidden="true"></canvas></div><div class="uniform-controls" aria-label="Vistas da camisa"></div>';
+  root.innerHTML = '<div class="uniform-stage" tabindex="0" role="group" aria-label="Camisa da STARK em 3D. Arraste ou use as setas do teclado para girar."><img class="uniform-poster" alt="Uniforme azul-marinho da STARK, com os escudos da equipe e do SESI." draggable="false"><canvas hidden aria-hidden="true"></canvas></div><div class="uniform-controls" aria-label="Vistas da camisa"></div>';
   const stage = root.querySelector('.uniform-stage');
   const poster = root.querySelector('img');
   const canvas = root.querySelector('canvas');
@@ -62,7 +62,7 @@
   });
   const dialog = document.createElement('dialog');
   dialog.className = 'uniform-dialog';
-  dialog.setAttribute('aria-label', 'Uniforme da Stark em tela cheia');
+  dialog.setAttribute('aria-label', 'Uniforme da STARK em tela cheia');
   const surface = document.createElement('div');
   surface.className = 'uniform-surface';
   dialog.append(surface);
@@ -84,7 +84,7 @@
     if (spinFrame !== null) cancelAnimationFrame(spinFrame);
     spinFrame = null;
     lastTime = null;
-    spin.textContent = rotating ? 'Pausar giro' : 'Girar';
+    spin.textContent = window.STARK_UI.t(rotating ? 'Pausar giro' : 'Girar');
     spin.setAttribute('aria-label',spin.textContent);
     if (!dialog.open || !rotating || pointers.size || document.hidden) return;
     function step(now) {
