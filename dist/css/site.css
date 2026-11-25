@@ -71,3 +71,96 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 .uniform-surface #camisa3d{height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto}
 .uniform-surface #camisa3d .uniform-stage{height:100%;min-height:0;border-radius:0}
 .uniform-surface #camisa3d .uniform-controls{margin:0;gap:6px;background:#0b192e;padding:10px 12px max(10px,env(safe-area-inset-bottom))}
+
+.hero-title {
+  position: relative;
+  display: flow-root;
+  width: fit-content;
+  max-width: 100%;
+  padding-block: 7px;
+}
+.hero-title h1 {
+  margin-block: 18px;
+}
+.hero-robot-track {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-robot-track {
+    display: block;
+    position: absolute;
+    inset: 6px -4px;
+    border: 1px dashed #91baff38;
+    border-radius: 16px;
+    pointer-events: none;
+  }
+  .hero-robot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 26px;
+    offset-path: inset(0 round 16px);
+    offset-rotate: 0deg;
+    filter: drop-shadow(0 0 6px #72bfffaa);
+    animation: hero-robot-orbit 12s linear infinite;
+  }
+  .hero-robot-head {
+    position: absolute;
+    inset: 4px 1px 7px;
+    border: 2px solid #a4ccff;
+    border-radius: 5px;
+    background: #12294a;
+    animation: hero-robot-bob 280ms ease-in-out alternate infinite;
+  }
+  .hero-robot-head::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 5px;
+    top: -6px;
+    left: 50%;
+    background: #a4ccff;
+  }
+  .hero-robot-head::after {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 4px;
+    top: 3px;
+    left: 4px;
+    border-radius: 1px;
+    background: #b8eaff;
+    box-shadow: 7px 0 #b8eaff;
+  }
+  .hero-robot-leg {
+    position: absolute;
+    left: 6px;
+    bottom: 2px;
+    width: 4px;
+    height: 6px;
+    border-radius: 0 0 2px 2px;
+    background: #a4ccff;
+    transform-origin: top center;
+    animation: hero-robot-step 280ms ease-in-out alternate infinite;
+  }
+  .hero-robot-leg:last-child {
+    left: 14px;
+    animation-direction: alternate-reverse;
+  }
+}
+@keyframes hero-robot-orbit {
+  to { offset-distance: 100%; }
+}
+@keyframes hero-robot-bob {
+  to { transform: translateY(-2px); }
+}
+@keyframes hero-robot-step {
+  from { transform: rotate(-32deg); }
+  to { transform: rotate(32deg); }
+}
+
+#media-frame > img.media-slide,
+#media-frame > video.media-slide {
+  object-fit: contain;
+}

@@ -55,6 +55,7 @@
   function renderGallery(items) {
     const frame = $('#media-frame');
     const filters = [...document.querySelectorAll('[data-filter]')];
+    const arrows = [...document.querySelectorAll('[data-gallery]')];
     let selected = items;
     let index = 0;
     let transition = [];
@@ -105,12 +106,13 @@
       button.onclick = () => {
         selected = type === 'tudo' ? items : items.filter(item => item.tipo === type);
         index = 0;
+        arrows.forEach(arrow => { arrow.disabled = selected.length < 2; });
         filters.forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
         show();
       };
     }
-    document.querySelectorAll('[data-gallery]').forEach(button => {
-      button.disabled = !items.length;
+    arrows.forEach(button => {
+      button.disabled = selected.length < 2;
       button.onclick = () => {
         const direction = Number(button.dataset.gallery);
         index = (index + direction + selected.length) % selected.length;

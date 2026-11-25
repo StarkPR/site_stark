@@ -19,33 +19,8 @@
     },
     {
       "tipo": "video",
-      "arquivo": "",
-      "legenda": "Vídeo da equipe"
-    },
-    {
-      "tipo": "video",
-      "arquivo": "",
-      "legenda": "Vídeo da equipe · 02"
-    },
-    {
-      "tipo": "foto",
-      "arquivo": "",
-      "legenda": "Foto da equipe · 03"
-    },
-    {
-      "tipo": "foto",
-      "arquivo": "",
-      "legenda": "Foto da equipe · 04"
-    },
-    {
-      "tipo": "foto",
-      "arquivo": "",
-      "legenda": "Foto da equipe · 05"
-    },
-    {
-      "tipo": "foto",
-      "arquivo": "",
-      "legenda": "Foto da equipe · 06"
+      "arquivo": "assets/galeria/bastidores.mp4",
+      "legenda": "Bastidores da equipe Stark"
     }
   ],
   "competicoes": [
