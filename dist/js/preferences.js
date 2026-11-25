@@ -1,5 +1,7 @@
 (() => {
   const english = {
+    "Carrossel dos bastidores": "Behind-the-scenes carousel",
+    "carrossel": "carousel",
     "Temporada 2026 — O Início de um Legado": "2026 Season — The Beginning of a Legacy",
     "Retrospectiva do J.A.R.V.I.S.": "J.A.R.V.I.S. Retrospective",
     "Regional": "Regional round",
@@ -206,8 +208,8 @@
       const translated = t(text);
       if (translated !== text) node.data = node.data.replace(text, translated);
     }
-    const attributes = ['aria-label', 'alt', 'title'];
-    for (const node of [scope, ...scope.querySelectorAll('[aria-label],[alt],[title]')]) {
+    const attributes = ['aria-label', 'aria-roledescription', 'alt', 'title'];
+    for (const node of [scope, ...scope.querySelectorAll('[aria-label],[aria-roledescription],[alt],[title]')]) {
       for (const name of attributes) {
         if (node.hasAttribute(name)) node.setAttribute(name, t(node.getAttribute(name)));
       }

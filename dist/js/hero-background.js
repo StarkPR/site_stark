@@ -25,6 +25,8 @@
           continue;
         }
         if (!shouldRotate()) break;
+        for (const image of photos) delete image.dataset.exiting;
+        photos[current].dataset.exiting = '';
         delete photos[current].dataset.current;
         photos[next].dataset.current = '';
         current = next;

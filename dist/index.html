@@ -9,7 +9,7 @@
   <script defer src="js/preferences.js"></script>
   <script defer src="js/hero-flight.js"></script>
   <script defer src="js/hero-background.js"></script>
-  <script defer src="js/robo-cad.js"></script><script defer src="js/site.js"></script><script defer src="js/uniforme.js"></script>
+  <script defer src="js/robo-cad.js"></script><script defer src="js/circular-carousel.js"></script><script defer src="js/site.js"></script><script defer src="js/uniforme.js"></script>
 </head>
 <body>
 <a class="skip" href="#principal">Pular para o conteúdo</a>
@@ -87,7 +87,7 @@
 <section id="galeria" class="section"><div class="wrap duo">
   <article class="gallery panel" aria-label="Galeria de fotos e vídeos"><div class="panel-top"><div class="section-kicker"><span></span> GALERIA</div><div class="counter" id="gallery-count" aria-live="polite"></div></div><h2>Bastidores da equipe<span>.</span></h2>
     <div class="media-filters" role="group" aria-label="Filtrar galeria"><button type="button" data-filter="tudo" aria-pressed="true">Tudo</button><button type="button" data-filter="foto" aria-pressed="false">Fotos</button><button type="button" data-filter="video" aria-pressed="false">Vídeos</button></div>
-    <figure id="media-frame"></figure><div class="slider-bottom"><span id="media-caption"></span><div class="arrows"><button data-gallery="-1" aria-label="Mídia anterior">←</button><button data-gallery="1" aria-label="Próxima mídia">→</button></div></div>
+    <div id="media-frame" class="circular-stage" role="region" aria-label="Carrossel dos bastidores" aria-roledescription="carrossel" tabindex="0"></div><div class="slider-bottom"><span id="media-caption"></span><div class="arrows"><button data-gallery="-1" aria-label="Mídia anterior">←</button><button id="gallery-play" type="button" aria-label="Pausar rotação" title="Pausar rotação">Ⅱ</button><button data-gallery="1" aria-label="Próxima mídia">→</button></div></div>
   </article>
   <article class="jersey panel"><div class="section-kicker"><span></span> UNIFORME</div><h2>O manto da STARK<span>.</span></h2><div id="camisa3d"></div></article>
 </div></section>
@@ -102,7 +102,7 @@
 </div></section>
 <section id="integrantes" class="section"><div class="wrap duo">
 <div class="panel member-panel"><div class="panel-top"><div class="section-kicker"><span></span> EQUIPE STARK</div><span class="counter" id="member-count" aria-live="off">01 / 04</span></div><h2>Integrantes<span>.</span></h2>
-<div class="member-stage" id="member" role="region" aria-roledescription="carrossel" aria-label="Integrantes da STARK"></div>
+<div class="member-stage circular-stage" id="member" tabindex="0" role="region" aria-roledescription="carrossel" aria-label="Integrantes da STARK"></div>
 <div class="member-controls"><button class="round" data-member="-1" aria-label="Integrante anterior">←</button><button id="member-play" type="button">Pausar rotação</button><button class="round" data-member="1" aria-label="Próximo integrante">→</button></div></div>
 <div class="panel" id="apoiadores"><div class="section-kicker"><span></span> PARCERIAS</div><h2>Apoiadores<span>.</span></h2><div class="supporter-grid" id="supporters"></div></div>
 </div></section>

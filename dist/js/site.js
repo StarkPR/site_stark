@@ -66,6 +66,7 @@
       fullPhoto.src = item.arquivo;
       fullCaption.textContent = t(item.legenda);
       dialog.showModal();
+      carousel.schedule();
       try {
         await surface.requestFullscreen?.();
       } catch { /* The viewport-sized dialog also works without native fullscreen. */ }
@@ -79,99 +80,112 @@
       if (document.fullscreenElement === surface) document.exitFullscreen().catch(() => {});
       fullPhoto.removeAttribute('src');
     });
+    const player = $('#gallery-play');
     let selected = items;
-    let index = 0;
-    let transition = [];
-    function show(direction = 0) {
-      for (const animation of transition) animation.cancel();
-      transition = [];
-      const previous = frame.lastElementChild;
-      const item = selected[index];
-      frame.querySelector('video')?.pause();
-      frame.replaceChildren();
-      let next;
-      $('#gallery-count').textContent = number(index + 1) + ' / ' + number(selected.length);
-      $('#media-caption').textContent = t(item.legenda);
+    let slides = [];
+    let active = 0;
+    const carousel = window.STARK_CAROUSEL(frame, {
+      interval:6500,
+      canRotate:() => !dialog.open && !slides[active]?.querySelector('video'),
+      onChange(index) {
+        active = index;
+        slides.forEach((slide, i) => {
+          const video = slide.querySelector('video');
+          if (!video) return;
+          video.controls = i === index;
+          if (i !== index) video.pause();
+        });
+        $('#gallery-count').textContent = number(index + 1) + ' / ' + number(selected.length);
+        $('#media-caption').textContent = t(selected[index].legenda);
+      }
+    });
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let playing = !motion.matches;
+
+    function setPlaying(value) {
+      playing = value;
+      const label = t(playing ? 'Pausar rotação' : 'Iniciar rotação');
+      player.textContent = playing ? 'Ⅱ' : '▶';
+      player.setAttribute('aria-label', label);
+      player.title = label;
+      $('#gallery-count').setAttribute('aria-live', playing ? 'off' : 'polite');
+      carousel.setPlaying(playing);
+    }
+
+    function makeSlide(item) {
+      const card = el('div', null, 'circular-card');
+      let media;
       if (item.tipo === 'video' && item.arquivo) {
         const video = el('video');
         video.src = item.arquivo;
-        video.controls = true;
         video.playsInline = true;
         video.preload = 'metadata';
         video.setAttribute('aria-label', t(item.legenda));
-        next = video;
+        media = video;
       } else if (item.arquivo) {
-        next = el('button', null, 'gallery-zoom');
-        next.type = 'button';
-        next.setAttribute('aria-label', t('Ver foto em tela cheia') + ' · ' + t(item.legenda));
+        const button = el('button', null, 'gallery-zoom');
+        button.type = 'button';
+        button.setAttribute('aria-label', t('Ver foto em tela cheia') + ' · ' + t(item.legenda));
         const expand = el('span', '⛶', 'gallery-zoom-icon');
         expand.setAttribute('aria-hidden', 'true');
-        next.append(photo(item.arquivo, item.legenda), expand);
-        next.onclick = () => expandPhoto(item);
+        button.append(photo(item.arquivo, item.legenda), expand);
+        button.onclick = () => expandPhoto(item);
+        media = button;
       } else {
         const slot = el('span', null, 'placeholder');
         const video = item.tipo === 'video';
         slot.append(icon(video ? 'film' : 'photo'), el('span', video ? 'Espaço para vídeo' : 'Espaço para foto'));
-        next = slot;
+        media = slot;
       }
-      next.classList.add('media-slide');
-      if (previous && direction && typeof next.animate === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        previous.inert = true;
-        previous.setAttribute('aria-hidden','true');
-        frame.append(previous, next);
-        const timing = {duration:390, easing:'cubic-bezier(.22,.72,.22,1)'};
-        const slide = (node,from,to) => node.animate([
-          {transform:'translateX('+from+'%)'}, {transform:'translateX('+to+'%)'}
-        ],timing);
-        transition = [slide(previous,0,-direction*100),slide(next,direction*100,0)];
-        transition[0].onfinish = () => previous.remove();
-      } else {
-        frame.append(next);
-      }
+      media.classList.add('media-slide');
+      card.append(media);
+      return card;
     }
-    for (const button of filters) {
+
+    function updateFilter(type) {
+      slides.forEach(slide => slide.querySelector('video')?.pause());
+      selected = type === 'tudo' ? items : items.filter(item => item.tipo === type);
+      slides = selected.map(makeSlide);
+      carousel.replace(slides);
+      const hasNavigation = selected.length > 1;
+      frame.toggleAttribute('data-single', !hasNavigation);
+      arrows.forEach(arrow => { arrow.disabled = !hasNavigation; });
+      player.hidden = !hasNavigation || motion.matches;
+    }
+
+    filters.forEach(button => {
       const type = button.dataset.filter;
       button.disabled = !items.some(item => type === 'tudo' || item.tipo === type);
       button.onclick = () => {
-        selected = type === 'tudo' ? items : items.filter(item => item.tipo === type);
-        index = 0;
-        arrows.forEach(arrow => { arrow.disabled = selected.length < 2; });
         filters.forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
-        show();
-      };
-    }
-    arrows.forEach(button => {
-      button.disabled = selected.length < 2;
-      button.onclick = () => {
-        const direction = Number(button.dataset.gallery);
-        index = (index + direction + selected.length) % selected.length;
-        show(direction);
+        updateFilter(type);
       };
     });
-    if (selected.length) show();
+    arrows.forEach(button => { button.onclick = () => carousel.step(Number(button.dataset.gallery)); });
+    player.onclick = () => setPlaying(!playing);
+    motion.addEventListener('change', () => {
+      player.hidden = selected.length < 2 || motion.matches;
+      setPlaying(!motion.matches);
+    });
+    dialog.addEventListener('close', carousel.schedule);
+    updateFilter('tudo');
+    setPlaying(playing);
   }
 
   function renderMembers(items) {
     if (!items.length) return;
-    const panel = $('.member-panel');
     const player = $('#member-play');
     const counter = $('#member-count');
-    const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const stage = $('#member');
-    const travelTime = 6500; // Milliseconds for one profile to cross the center.
-    const copies = items.length === 1 ? 1 : Math.ceil(4 / items.length);
-    const profiles = Array.from({length: copies}, () => items).flat();
-    const wrap = (value, length) => ((value % length) + length) % length;
-    let position = 0;
-    let target = null;
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
     let playing = !motion.matches;
-    let visible = false;
-    let frame = null;
-    let lastTime = null;
-    let current = -1;
+    const carousel = window.STARK_CAROUSEL(stage, {
+      interval:3900,
+      onChange(index) { counter.textContent = number(index + 1) + ' / ' + number(items.length); }
+    });
 
-    const cards = profiles.map(person => {
-      const card = el('article', null, 'member-card');
+    const cards = items.map(person => {
+      const card = el('article', null, 'member-card circular-card');
       const portrait = el('a', null, 'member-photo');
       portrait.href = person.instagram;
       portrait.target = '_blank';
@@ -183,87 +197,21 @@
       card.append(portrait, el('h3', person.nome), el('small', person.funcao));
       return card;
     });
-    stage.replaceChildren(...cards);
+    carousel.replace(cards);
 
-    function paint() {
-      const half = cards.length / 2;
-      cards.forEach((card, i) => {
-        const offset = wrap(i - position + half, cards.length) - half;
-        const distance = Math.abs(offset);
-        const scale = 1 - .16 * Math.min(distance, 1.6);
-        const fade = Math.max(0, Math.min(1, (1.94 - distance) / .5));
-        card.style.transform = 'translate3d(' + offset * 95 + '%,0,0) scale(' + scale + ')';
-        card.style.opacity = (1 - .19 * Math.min(distance, 1)) * fade;
-        card.style.zIndex = String(Math.round(100 - 20 * distance));
-        const hidden = distance > 1.65;
-        if (card.inert !== hidden) {
-          card.inert = hidden;
-          card.setAttribute('aria-hidden', String(hidden));
-        }
-      });
-      const nearest = wrap(Math.round(position), items.length);
-      if (nearest !== current) {
-        current = nearest;
-        counter.textContent = number(current + 1) + ' / ' + number(items.length);
-      }
-    }
-
-    function canMove() {
-      return cards.length > 1 && visible && !document.hidden &&
-        (target !== null || (playing && !stage.contains(document.activeElement)));
-    }
-    function tick(time) {
-      frame = null;
-      if (!canMove()) { lastTime = null; return; }
-      const elapsed = lastTime === null ? 0 : Math.min(time - lastTime, 100);
-      lastTime = time;
-      if (target === null) {
-        position = wrap(position + elapsed / travelTime, cards.length);
-      } else {
-        const gap = target - position;
-        const step = elapsed / 420;
-        if (Math.abs(gap) <= step) {
-          position = wrap(target, cards.length);
-          target = null;
-        } else {
-          position += Math.sign(gap) * step;
-        }
-      }
-      paint();
-      if (canMove()) frame = requestAnimationFrame(tick);
-      else lastTime = null;
-    }
-    function sync() {
-      if (frame !== null) cancelAnimationFrame(frame);
-      frame = null;
-      lastTime = null;
-      if (canMove()) frame = requestAnimationFrame(tick);
-    }
-    function advance(direction) {
-      if (items.length < 2) return;
-      target = (target ?? Math.round(position)) + direction;
-      if (motion.matches) {
-        position = wrap(target, cards.length);
-        target = null;
-        paint();
-      }
-      sync();
-    }
     function setPlaying(value) {
       playing = value;
-      target = null;
       player.textContent = t(playing ? 'Pausar rotação' : 'Iniciar rotação');
+      player.hidden = motion.matches || items.length < 2;
       counter.setAttribute('aria-live', playing ? 'off' : 'polite');
-      sync();
+      carousel.setPlaying(playing);
     }
     player.onclick = () => setPlaying(!playing);
     motion.addEventListener('change', () => setPlaying(!motion.matches));
-    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(stage);
-    stage.addEventListener('focusin', sync);
-    stage.addEventListener('focusout', () => requestAnimationFrame(sync));
-    document.addEventListener('visibilitychange', sync);
-    document.querySelectorAll('[data-member]').forEach(b => b.onclick = () => advance(Number(b.dataset.member)));
-    paint();
+    document.querySelectorAll('[data-member]').forEach(button => {
+      button.disabled = items.length < 2;
+      button.onclick = () => carousel.step(Number(button.dataset.member));
+    });
     setPlaying(playing);
   }
 
