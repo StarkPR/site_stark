@@ -145,8 +145,8 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 .hero-letter,.hero-letter>span{display:inline-block}
 .hero-robot-flight{position:absolute;inset:0;pointer-events:none;z-index:2}
 .hero-robot{
-  position:absolute;left:4%;top:38%;width:clamp(41px,5.2vw,66px);aspect-ratio:1;
-  transform:translate(-50%,-50%);filter:drop-shadow(0 0 8px #5ab7ffb3)
+  position:absolute;left:0;top:0;width:clamp(43px,5.4vw,68px);aspect-ratio:1;
+  visibility:hidden;filter:drop-shadow(0 0 8px #5ab7ffb3)
 }
 .hero-robot-head,.hero-robot-body,.hero-robot-thrusters{position:absolute}
 .hero-robot-head{
@@ -170,7 +170,7 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
   transform-origin:50% 0
 }
 @media(prefers-reduced-motion:no-preference){
-  .hero-robot{animation:hero-flight 11s ease-in-out infinite}
+  .hero-robot[data-flying]{visibility:visible}
   .hero-robot-thrusters{animation:hero-thrust .26s ease-in-out infinite alternate}
   .hero-word:nth-child(even) .hero-letter{--letter-tilt:-11deg}
   .hero-letter:nth-child(even){--letter-shift:6px;--letter-scale:1.14}
@@ -178,15 +178,6 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 }
 @media(prefers-reduced-motion:reduce){
   .hero-robot-flight,.cursor-reactor{display:none}
-}
-@keyframes hero-flight{
-  0%,100%{left:4%;top:38%;transform:translate(-50%,-50%) rotate(-14deg) scale(.87)}
-  16%{left:31%;top:16%;transform:translate(-50%,-50%) rotate(12deg) scale(1)}
-  34%{left:72%;top:49%;transform:translate(-50%,-50%) rotate(24deg) scale(.95)}
-  49%{left:93%;top:28%;transform:translate(-50%,-50%) rotate(-4deg) scale(.8)}
-  64%{left:74%;top:82%;transform:translate(-50%,-50%) rotate(-20deg) scale(1.04)}
-  80%{left:42%;top:60%;transform:translate(-50%,-50%) rotate(-19deg) scale(.88)}
-  92%{left:14%;top:78%;transform:translate(-50%,-50%) rotate(-26deg) scale(.9)}
 }
 @keyframes hero-thrust{to{transform:scaleY(.62);opacity:.66}}
 @keyframes hero-glyph{
