@@ -9,13 +9,28 @@
   "galeria": [
     {
       "tipo": "foto",
-      "arquivo": "assets/galeria/perfil-um.jpg",
-      "legenda": "Uniforme da Stark · vista lateral"
+      "arquivo": "assets/galeria/equipe-na-competicao.webp",
+      "legenda": "Equipe Stark reunida na competição"
     },
     {
       "tipo": "foto",
-      "arquivo": "assets/galeria/perfil-dois.jpg",
-      "legenda": "Uniforme da Stark · manga oposta"
+      "arquivo": "assets/galeria/robo-com-farois.webp",
+      "legenda": "Robô da Stark com os faróis acesos"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/credenciais.webp",
+      "legenda": "Credenciais da equipe no Salão de Robótica"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/integrante-com-robo.webp",
+      "legenda": "Integrante da Stark apresenta o robô"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/programacao.webp",
+      "legenda": "Equipe Stark programando nos bastidores"
     },
     {
       "tipo": "video",
