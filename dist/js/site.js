@@ -54,19 +54,41 @@
     document.querySelectorAll('.about-grid article,.section .panel,.competitions .wrap,.contact-inner').forEach(node => reveal.observe(node));
   }
   function renderGallery(items) {
+    if (!items.length) return;
+    const duration = 5200;
     const frame = $('#media-frame');
+    const stage = $('#gallery-slides');
+    const progress = $('#gallery-progress');
+    const player = $('#gallery-play');
+    const counter = $('#gallery-count');
+    const caption = $('#media-caption');
     const filters = [...document.querySelectorAll('[data-filter]')];
-    const arrows = [...document.querySelectorAll('[data-gallery]')];
+    const navigation = $('.gallery-navigation');
     const dialog = $('#gallery-photo-dialog');
     const surface = $('.gallery-photo-surface');
     const fullPhoto = $('#gallery-full-photo');
     const fullCaption = $('#gallery-photo-caption');
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let selected = items;
+    let slides = [];
+    let bars = [];
+    let photoIndexes = [];
+    let active = -1;
+    let elapsed = 0;
+    let startedAt;
+    let animation = 0;
+    let playing = !motion.matches;
+    let visible = !('IntersectionObserver' in window);
+    let hovered = false;
+    let drag;
+    let suppressClick = false;
     let enteredFullscreen = false;
+
     async function expandPhoto(item) {
       fullPhoto.src = item.arquivo;
       fullCaption.textContent = t(item.legenda);
       dialog.showModal();
-      carousel.schedule();
+      updateClock();
       try {
         await surface.requestFullscreen?.();
       } catch { /* The viewport-sized dialog also works without native fullscreen. */ }
@@ -79,41 +101,47 @@
       enteredFullscreen = false;
       if (document.fullscreenElement === surface) document.exitFullscreen().catch(() => {});
       fullPhoto.removeAttribute('src');
+      updateClock();
     });
-    const player = $('#gallery-play');
-    const dots = $('#gallery-dots');
-    let buttons = [];
-    let videoIndex = -1;
-    let selected = items;
-    let slides = [];
-    let active = 0;
-    const carousel = window.STARK_CAROUSEL(frame, {
-      interval:5200,
-      canRotate:() => !dialog.open && selected[active]?.tipo !== 'video',
-      canAutoSelect:index => selected[index]?.tipo === 'foto',
-      onMove(distanceFrom, automatic) {
-        const approach = automatic || videoIndex < 0 ? 0 : 1 - Math.min(1, Math.abs(distanceFrom(videoIndex)));
-        frame.style.setProperty('--gallery-video-progress', approach.toFixed(4));
-      },
-      onChange(index) {
-        active = index;
-        slides.forEach((slide, i) => {
-          const video = slide.querySelector('video');
-          if (!video) return;
-          video.controls = i === index;
-          if (i !== index) video.pause();
-        });
-        $('#gallery-count').textContent = number(index + 1) + ' / ' + number(selected.length);
-        $('#media-caption').textContent = t(selected[index].legenda);
-        dots.style.setProperty('--gallery-active-dot', index);
-        buttons.forEach((button, i) => {
-          if (i === index) button.setAttribute('aria-current', 'true');
-          else button.removeAttribute('aria-current');
-        });
+
+    function fillBar(ratio) {
+      bars[active]?.style.setProperty('--story-fill', Math.min(1, ratio));
+    }
+
+    function stopClock() {
+      cancelAnimationFrame(animation);
+      animation = 0;
+      startedAt = undefined;
+    }
+
+    function nextPhoto() {
+      return photoIndexes.find(index => index > active) ?? photoIndexes[0];
+    }
+
+    function tick(now) {
+      startedAt ??= now - elapsed;
+      elapsed = now - startedAt;
+      fillBar(elapsed / duration);
+      if (elapsed >= duration) {
+        select(nextPhoto(), 1);
+      } else {
+        animation = requestAnimationFrame(tick);
       }
-    });
-    const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    let playing = !motion.matches;
+    }
+
+    function updateClock() {
+      const canAdvance = playing && !motion.matches && visible && !document.hidden &&
+        !hovered && !drag && !dialog.open && !frame.matches(':focus-visible, :has(:focus-visible)') &&
+        selected[active]?.tipo === 'foto' && photoIndexes.length > 1;
+      if (canAdvance) {
+        if (!animation) {
+          slides[nextPhoto()].querySelector('img')?.setAttribute('loading', 'eager');
+          animation = requestAnimationFrame(tick);
+        }
+      } else {
+        stopClock();
+      }
+    }
 
     function setPlaying(value) {
       playing = value;
@@ -121,20 +149,30 @@
       player.toggleAttribute('data-playing', playing);
       player.setAttribute('aria-label', label);
       player.title = label;
-      $('#gallery-count').setAttribute('aria-live', playing ? 'off' : 'polite');
-      carousel.setPlaying(playing);
+      counter.setAttribute('aria-live', playing ? 'off' : 'polite');
+      updateClock();
     }
 
-    function makeSlide(item) {
-      const card = el('div', null, 'circular-card');
+    function makeSlide(item, index) {
+      const card = el('div', null, 'gallery-slide');
+      card.inert = true;
+      card.setAttribute('aria-hidden', 'true');
       let media;
       if (item.tipo === 'video' && item.arquivo) {
         const video = el('video');
         card.classList.add('gallery-video-card');
         video.src = item.arquivo;
+        video.controls = true;
         video.playsInline = true;
         video.preload = 'metadata';
         video.setAttribute('aria-label', t(item.legenda));
+        for (const event of ['timeupdate', 'loadedmetadata']) {
+          video.addEventListener(event, () => {
+            if (index === active && slides[active] === card && video.duration > 0) {
+              fillBar(video.currentTime / video.duration);
+            }
+          });
+        }
         media = video;
       } else if (item.arquivo) {
         const button = el('button', null, 'gallery-zoom');
@@ -156,36 +194,69 @@
       return card;
     }
 
-    frame.addEventListener('animationend', event => {
-      if (event.target === frame && event.animationName === 'gallery-video-enter') {
-        frame.classList.remove('gallery-video-enter');
-      }
+    stage.addEventListener('animationend', event => {
+      if (event.animationName === 'story-slide-exit') event.target.removeAttribute('data-leaving');
     });
+
+    function select(index, direction, animate = true) {
+      if (index === active) return;
+      stopClock();
+      elapsed = 0;
+      slides.forEach(slide => slide.removeAttribute('data-leaving'));
+      const previous = slides[active];
+      if (previous) {
+        if (previous.contains(document.activeElement)) frame.focus({preventScroll:true});
+        previous.querySelector('video')?.pause();
+        previous.removeAttribute('data-centered');
+        previous.inert = true;
+        previous.setAttribute('aria-hidden', 'true');
+      }
+      const shouldAnimate = animate && !motion.matches;
+      if (previous && shouldAnimate) previous.setAttribute('data-leaving', '');
+      stage.style.setProperty('--story-direction', direction);
+      stage.toggleAttribute('data-animate', shouldAnimate);
+      active = index;
+      slides[active].setAttribute('data-centered', '');
+      slides[active].inert = false;
+      slides[active].removeAttribute('aria-hidden');
+      const video = slides[active].querySelector('video');
+      frame.toggleAttribute('data-video', Boolean(video));
+      counter.textContent = number(index + 1) + ' / ' + number(selected.length);
+      caption.textContent = t(selected[index].legenda);
+      bars.forEach((bar, i) => {
+        bar.style.setProperty('--story-fill', i < index ? 1 : 0);
+        if (i === index) bar.setAttribute('aria-current', 'true');
+        else bar.removeAttribute('aria-current');
+      });
+      if (video?.duration > 0) fillBar(video.currentTime / video.duration);
+      updateClock();
+    }
 
     function updateFilter(type) {
       const wasVideo = selected[active]?.tipo === 'video';
-      frame.classList.remove('gallery-video-enter');
       slides.forEach(slide => slide.querySelector('video')?.pause());
+      active = -1;
       selected = type === 'tudo' ? items : items.filter(item => item.tipo === type);
       slides = selected.map(makeSlide);
-      videoIndex = slides.findIndex(slide => slide.classList.contains('gallery-video-card'));
-      buttons = selected.map((item, index) => {
+      photoIndexes = [];
+      bars = selected.map((item, index) => {
+        if (item.tipo === 'foto') photoIndexes.push(index);
         const button = el('button');
         button.type = 'button';
         button.setAttribute('aria-label', t('Ir para mídia') + ' ' + (index + 1) + ' · ' + t(item.legenda));
-        button.onclick = () => carousel.goTo(index);
+        button.onclick = () => select(index, index >= active ? 1 : -1);
         return button;
       });
-      dots.replaceChildren(...buttons);
-      carousel.replace(slides);
-      const hasNavigation = selected.length > 1;
-      dots.hidden = !hasNavigation;
-      if (!wasVideo && videoIndex === 0 && type === 'video' && !motion.matches) {
-        frame.classList.add('gallery-video-enter');
-      }
-      frame.toggleAttribute('data-single', !hasNavigation);
-      arrows.forEach(arrow => { arrow.disabled = !hasNavigation; });
-      player.hidden = !hasNavigation || motion.matches;
+      progress.replaceChildren(...bars);
+      stage.replaceChildren(...slides);
+      frame.toggleAttribute('data-single', selected.length < 2);
+      navigation.hidden = selected.length < 2;
+      player.hidden = motion.matches || photoIndexes.length < 2;
+      select(0, 1, !wasVideo && type === 'video');
+    }
+
+    function step(direction) {
+      select((active + direction + selected.length) % selected.length, direction);
     }
 
     filters.forEach(button => {
@@ -196,13 +267,67 @@
         updateFilter(type);
       };
     });
-    arrows.forEach(button => { button.onclick = () => carousel.step(Number(button.dataset.gallery)); });
+    navigation.querySelectorAll('[data-gallery]').forEach(button => {
+      button.onclick = () => step(Number(button.dataset.gallery));
+    });
+    frame.addEventListener('keydown', event => {
+      if (event.target.closest('video') || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      step(event.key === 'ArrowRight' ? 1 : -1);
+    });
+    frame.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = true;
+      updateClock();
+    });
+    frame.addEventListener('pointerdown', event => {
+      suppressClick = false;
+      if (event.button !== 0 || selected.length < 2 || event.target.closest('video, .gallery-navigation')) return;
+      drag = {id:event.pointerId, x:event.clientX, y:event.clientY};
+      updateClock();
+    });
+    frame.addEventListener('pointerup', event => {
+      if (drag?.id !== event.pointerId) return;
+      const distance = event.clientX - drag.x;
+      const vertical = event.clientY - drag.y;
+      drag = undefined;
+      if (Math.abs(distance) > Math.max(32, Math.abs(vertical))) {
+        suppressClick = true;
+        step(distance < 0 ? 1 : -1);
+      }
+      updateClock();
+    });
+    frame.addEventListener('pointercancel', () => {
+      drag = undefined;
+      updateClock();
+    });
+    frame.addEventListener('pointerleave', () => {
+      drag = undefined;
+      hovered = false;
+      updateClock();
+    });
+    frame.addEventListener('click', event => {
+      if (suppressClick && event.detail) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressClick = false;
+      }
+    }, true);
+    frame.addEventListener('focusin', updateClock);
+    frame.addEventListener('focusout', () => queueMicrotask(updateClock));
+    document.addEventListener('visibilitychange', updateClock);
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        updateClock();
+      }, {threshold:.15});
+      observer.observe(frame);
+    }
     player.onclick = () => setPlaying(!playing);
     motion.addEventListener('change', () => {
-      player.hidden = selected.length < 2 || motion.matches;
+      player.hidden = motion.matches || photoIndexes.length < 2;
       setPlaying(!motion.matches);
     });
-    dialog.addEventListener('close', carousel.schedule);
     updateFilter('tudo');
     setPlaying(playing);
   }
