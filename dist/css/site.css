@@ -289,3 +289,19 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 }
 .hero-robot[data-detached]{position:fixed;z-index:14}
 .hero-robot[data-grabbed]{cursor:grabbing}
+
+.season-panel{
+  padding:26px;border:1px solid var(--edge);border-radius:12px;background:var(--card)
+}
+#season-list article+article{margin-top:20px;padding-top:20px;border-top:1px solid var(--edge)}
+#season-list h3{margin:0;font-size:24px}
+#season-list p,#award-list p,.comp-grid #comp-copy p{max-width:68ch;line-height:1.7}
+#season-list p{color:var(--muted);margin-bottom:0}
+.competitions p strong{color:var(--ink)}
+#award-list article:has(img){
+  display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start
+}
+#award-list img{display:block;width:100%;max-height:440px;object-fit:contain;object-position:top;border-radius:8px}
+@media(max-width:760px){
+  #award-list article:has(img){grid-template-columns:1fr}
+}

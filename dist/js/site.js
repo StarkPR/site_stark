@@ -267,18 +267,36 @@
     setPlaying(playing);
   }
 
+  // Treat catalog copy as text, with ** marking the only supported formatting.
+  function arenaParagraph(text) {
+    const paragraph = el('p');
+    t(text).split('**').forEach((part, index) => {
+      paragraph.append(index % 2 ? el('strong', part) : document.createTextNode(part));
+    });
+    return paragraph;
+  }
+
   function renderArena(data) {
     const event = data.competicoes[0];
     if (event) {
-      $('#comp-copy').append(el('h3',event.nome), el('p',event.texto));
+      $('#comp-copy').append(el('h3',event.nome), arenaParagraph(event.texto));
       if (event.imagem) $('#comp-image').append(photo(event.imagem,event.nome));
     }
     const list = $('#award-list');
     if (!data.premios.length) list.append(el('p','As premiações da STARK serão publicadas aqui.'));
     for (const prize of data.premios) {
       const record = el('article');
-      record.append(el('h4',prize.titulo), el('p',prize.edicao));
+      if (prize.titulo) record.append(el('h4', prize.titulo));
+      if (prize.edicao) record.append(el('p', prize.edicao));
+      if (prize.texto) record.append(arenaParagraph(prize.texto));
+      if (prize.imagem) record.append(photo(prize.imagem, prize.alt || ''));
       list.append(record);
+    }
+    const seasons = [...(data.temporadas || [])].sort((a, b) => b.ano - a.ano);
+    for (const season of seasons) {
+      const record = el('article');
+      record.append(el('h3', String(season.ano)), arenaParagraph(season.texto));
+      $('#season-list').append(record);
     }
     const tabs = [...document.querySelectorAll('.arena-tabs [role=tab]')];
     function select(tab) {
@@ -294,7 +312,9 @@
       tab.onkeydown = e => {
         if (!['ArrowRight','ArrowLeft','Home','End'].includes(e.key)) return;
         e.preventDefault();
-        const next = e.key === 'Home' ? tabs[0] : e.key === 'End' ? tabs.at(-1) : tabs[1-i];
+        const direction = e.key === 'ArrowLeft' ? -1 : 1;
+        const next = e.key === 'Home' ? tabs[0] : e.key === 'End' ? tabs.at(-1) :
+          tabs[(i + direction + tabs.length) % tabs.length];
         next.focus();
         select(next);
       };

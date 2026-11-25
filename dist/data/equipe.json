@@ -42,7 +42,7 @@
     {
       "sigla": "OBR",
       "nome": "Olimpíada Brasileira de Robótica",
-      "texto": "Na modalidade de resgate, o robô percorre a pista de forma autônoma e encontra as vítimas na zona de resgate.",
+      "texto": "A **Olimpíada Brasileira de Robótica (OBR)** é uma competição nacional que incentiva estudantes a desenvolverem conhecimentos em ciência, tecnologia e programação. Na modalidade prática, equipes projetam e programam robôs autônomos capazes de superar desafios, como seguir linhas, desviar de obstáculos e realizar resgates simulados. A OBR estimula a criatividade, a inovação, o raciocínio lógico e o trabalho em equipe, preparando jovens para os desafios da tecnologia.",
       "conquistas": "",
       "imagem": "assets/apoiadores/obr.png"
     }
@@ -74,7 +74,13 @@
     }
   ],
   "diario": [],
-  "premios": [],
+  "premios": [
+    {
+      "texto": "Na temporada 2026 da **Olimpíada Brasileira de Robótica (OBR)**, a equipe **STARK** conquistou o **4º lugar na categoria Resgate Nível 2 (N2)**, além de receber o prêmio de **Melhor Escola Privada** da categoria. Essa conquista representa a dedicação, o trabalho em equipe e o compromisso da STARK com a inovação e a robótica.",
+      "imagem": "assets/competicoes/premio-obr-2026.webp",
+      "alt": "Prêmio de Melhor Escola Privada da OBR 2026 com a medalha da equipe STARK"
+    }
+  ],
   "robo": {
     "tipo": "",
     "componentes": "",
@@ -88,6 +94,12 @@
     {
       "nome": "SESI",
       "imagem": "assets/apoiadores/sesi.jpg"
+    }
+  ],
+  "temporadas": [
+    {
+      "ano": 2026,
+      "texto": "Em 2026, a STARK levou o J.A.R.V.I.S. para a categoria Resgate Nível 2 (N2) da OBR. A equipe trabalhou na montagem e na programação do robô autônomo para os desafios da pista. A temporada terminou com o 4º lugar na categoria e o prêmio de Melhor Escola Privada."
     }
   ]
 }
