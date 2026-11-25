@@ -315,3 +315,16 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 .about-article-row .article-text p:last-child{margin-bottom:0}
 .article-photos{display:grid;gap:16px}
 .article-photos img{height:auto;max-height:480px;object-fit:contain;object-position:center;background:var(--card)}
+
+.season-robots{
+  display:grid;justify-items:center;gap:14px;width:min(100%,68ch);
+  margin-top:28px;padding-top:24px;border-top:1px solid var(--edge)
+}
+.season-robots h4{margin:0 0 4px;font-size:clamp(20px,2.4vw,28px);text-align:center}
+.season-robots figure{
+  width:min(100%,420px);margin:0;padding:14px;border:1px solid var(--edge);
+  border-radius:12px;background:var(--navy);text-align:center
+}
+.season-robots img{display:block;width:100%;aspect-ratio:3/2;object-fit:contain}
+.season-robots figcaption{margin-top:10px;font-weight:600;color:var(--ink)}
+.season-robot-arrow{color:var(--blue);font-size:26px;line-height:1}

@@ -295,7 +295,25 @@
     const seasons = [...(data.temporadas || [])].sort((a, b) => b.ano - a.ano);
     for (const season of seasons) {
       const record = el('article');
-      record.append(el('h3', String(season.ano)), arenaParagraph(season.texto));
+      record.append(el('h3', season.titulo || String(season.ano)));
+      for (const paragraph of season.texto.split(/\n\s*\n/)) {
+        record.append(arenaParagraph(paragraph));
+      }
+      if (season.robo?.length) {
+        const comparison = el('div', null, 'season-robots');
+        comparison.append(el('h4', 'Retrospectiva do J.A.R.V.I.S.'));
+        season.robo.forEach((version, index) => {
+          if (index) {
+            const arrow = el('span', '↓', 'season-robot-arrow');
+            arrow.setAttribute('aria-hidden', 'true');
+            comparison.append(arrow);
+          }
+          const figure = el('figure');
+          figure.append(photo(version.imagem, version.alt), el('figcaption', version.legenda));
+          comparison.append(figure);
+        });
+        record.append(comparison);
+      }
       $('#season-list').append(record);
     }
     const tabs = [...document.querySelectorAll('.arena-tabs [role=tab]')];
