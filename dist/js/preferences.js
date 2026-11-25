@@ -1,5 +1,7 @@
 (() => {
   const english = {
+    'Selecionar mídia': 'Select media',
+    'Ir para mídia': 'Go to item',
     "Carrossel dos bastidores": "Behind-the-scenes carousel",
     "carrossel": "carousel",
     "Temporada 2026 — O Início de um Legado": "2026 Season — The Beginning of a Legacy",

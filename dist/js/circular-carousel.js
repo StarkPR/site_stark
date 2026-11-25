@@ -2,7 +2,7 @@
   const wrap = (value, length) => ((value % length) + length) % length;
   const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 
-  function circularCarousel(stage, {onChange, interval = 0, canRotate = () => true}) {
+  function circularCarousel(stage, {onChange, onMove, interval = 0, canRotate = () => true, canAutoSelect}) {
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     let cards = [];
     let position = 0;
@@ -14,6 +14,7 @@
     let suppressClick = false;
     let visible = !('IntersectionObserver' in window);
     let autoplay = false;
+    let automaticMove = false;
 
     function offset(index) {
       const half = cards.length / 2;
@@ -24,7 +25,9 @@
       const count = cards.length;
       if (!count) return;
       const radius = stage.clientWidth * .39;
-      const active = wrap(Math.round(position), count);
+      const nearest = wrap(Math.round(position), count);
+      const active = automaticMove && canAutoSelect && !canAutoSelect(nearest) ? current : nearest;
+      onMove?.(offset, automaticMove);
       cards.forEach((card, index) => {
         const distance = offset(index);
         const angle = distance * 2 * Math.PI / count;
@@ -53,7 +56,7 @@
       if (autoplay && interval && visible && !document.hidden && !motion.matches &&
           cards.length > 1 && destination === null && !drag &&
           !stage.matches(':hover') && !stage.contains(document.activeElement) && canRotate()) {
-        timer = setTimeout(() => step(1), interval);
+        timer = setTimeout(advanceAutomatically, interval);
       }
     }
 
@@ -61,14 +64,17 @@
       cancelAnimationFrame(frame);
       frame = 0;
       destination = null;
+      automaticMove = false;
       clearTimeout(timer);
     }
 
-    function animateTo(target) {
+    function animateTo(target, automatic = false) {
       stopMotion();
+      automaticMove = automatic;
       if (motion.matches || target === position) {
         position = wrap(target, cards.length);
         paint();
+        automaticMove = false;
         schedule();
         return;
       }
@@ -87,6 +93,7 @@
           frame = 0;
           destination = null;
           paint();
+          automaticMove = false;
           schedule();
         }
       }
@@ -95,6 +102,21 @@
 
     function step(direction) {
       if (cards.length > 1) animateTo(Math.round(destination ?? position) + direction);
+    }
+
+    function advanceAutomatically() {
+      const start = Math.round(position);
+      for (let step = 1; step < cards.length; step++) {
+        const target = start + step;
+        if (!canAutoSelect || canAutoSelect(wrap(target, cards.length))) {
+          animateTo(target, true);
+          return;
+        }
+      }
+    }
+
+    function goTo(index) {
+      if (cards[index]) animateTo(Math.round(position + offset(index)));
     }
 
     stage.addEventListener('pointerdown', event => {
@@ -148,7 +170,7 @@
       if (index < 0 || index === current) return;
       event.preventDefault();
       event.stopPropagation();
-      animateTo(Math.round(position + offset(index)));
+      goTo(index);
     }, true);
     stage.addEventListener('keydown', event => {
       if (event.target.closest('video') || !['ArrowLeft','ArrowRight'].includes(event.key)) return;
@@ -175,6 +197,7 @@
 
     return {
       step,
+      goTo,
       schedule,
       replace(nextCards) {
         stopMotion();

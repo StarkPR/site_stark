@@ -81,12 +81,20 @@
       fullPhoto.removeAttribute('src');
     });
     const player = $('#gallery-play');
+    const dots = $('#gallery-dots');
+    let buttons = [];
+    let videoIndex = -1;
     let selected = items;
     let slides = [];
     let active = 0;
     const carousel = window.STARK_CAROUSEL(frame, {
-      interval:6500,
-      canRotate:() => !dialog.open && !slides[active]?.querySelector('video'),
+      interval:5200,
+      canRotate:() => !dialog.open && selected[active]?.tipo !== 'video',
+      canAutoSelect:index => selected[index]?.tipo === 'foto',
+      onMove(distanceFrom, automatic) {
+        const approach = automatic || videoIndex < 0 ? 0 : 1 - Math.min(1, Math.abs(distanceFrom(videoIndex)));
+        frame.style.setProperty('--gallery-video-progress', approach.toFixed(4));
+      },
       onChange(index) {
         active = index;
         slides.forEach((slide, i) => {
@@ -97,6 +105,11 @@
         });
         $('#gallery-count').textContent = number(index + 1) + ' / ' + number(selected.length);
         $('#media-caption').textContent = t(selected[index].legenda);
+        dots.style.setProperty('--gallery-active-dot', index);
+        buttons.forEach((button, i) => {
+          if (i === index) button.setAttribute('aria-current', 'true');
+          else button.removeAttribute('aria-current');
+        });
       }
     });
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -117,6 +130,7 @@
       let media;
       if (item.tipo === 'video' && item.arquivo) {
         const video = el('video');
+        card.classList.add('gallery-video-card');
         video.src = item.arquivo;
         video.playsInline = true;
         video.preload = 'metadata';
@@ -142,12 +156,33 @@
       return card;
     }
 
+    frame.addEventListener('animationend', event => {
+      if (event.target === frame && event.animationName === 'gallery-video-enter') {
+        frame.classList.remove('gallery-video-enter');
+      }
+    });
+
     function updateFilter(type) {
+      const wasVideo = selected[active]?.tipo === 'video';
+      frame.classList.remove('gallery-video-enter');
       slides.forEach(slide => slide.querySelector('video')?.pause());
       selected = type === 'tudo' ? items : items.filter(item => item.tipo === type);
       slides = selected.map(makeSlide);
+      videoIndex = slides.findIndex(slide => slide.classList.contains('gallery-video-card'));
+      buttons = selected.map((item, index) => {
+        const button = el('button');
+        button.type = 'button';
+        button.setAttribute('aria-label', t('Ir para mídia') + ' ' + (index + 1) + ' · ' + t(item.legenda));
+        button.onclick = () => carousel.goTo(index);
+        return button;
+      });
+      dots.replaceChildren(...buttons);
       carousel.replace(slides);
       const hasNavigation = selected.length > 1;
+      dots.hidden = !hasNavigation;
+      if (!wasVideo && videoIndex === 0 && type === 'video' && !motion.matches) {
+        frame.classList.add('gallery-video-enter');
+      }
       frame.toggleAttribute('data-single', !hasNavigation);
       arrows.forEach(arrow => { arrow.disabled = !hasNavigation; });
       player.hidden = !hasNavigation || motion.matches;

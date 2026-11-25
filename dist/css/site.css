@@ -479,26 +479,43 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 .circular-stage[data-single]{cursor:auto}
 .circular-card{min-width:0;backface-visibility:hidden;transform-origin:center}
 .circular-card:not([data-centered]) .gallery-zoom-icon{visibility:hidden}
+@property --gallery-video-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
 #media-frame.flex-carousel{
   --gallery-photo-height:295px;
   --gallery-video-height:clamp(400px,74svh,600px);
-  position:relative;width:100%;height:var(--gallery-photo-height);display:grid;place-items:center;
+  position:relative;width:100%;
+  height:calc(var(--gallery-photo-height) + (var(--gallery-video-height) - var(--gallery-photo-height)) * var(--gallery-video-progress,0));
+  display:grid;grid-template-rows:minmax(0,1fr);place-items:center;
   overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;
   -webkit-tap-highlight-color:transparent;overscroll-behavior-x:contain
 }
 #media-frame.flex-carousel[data-dragging],#media-frame.flex-carousel[data-dragging] *{cursor:grabbing}
 #media-frame.flex-carousel[data-single]{cursor:auto}
 #media-frame .circular-card{
-  position:relative;grid-area:1/1;width:67%;height:88%;border:0;background:transparent
+  position:relative;grid-area:1/1;width:67%;height:calc(var(--gallery-photo-height) * .88);border:0;background:transparent
 }
 #media-frame[data-single] .circular-card{width:100%;height:100%}
-#media-frame.flex-carousel:has([data-centered] video){height:var(--gallery-video-height)}
-#media-frame.flex-carousel:has([data-centered] video) .circular-card{max-height:var(--gallery-photo-height)}
-#media-frame.flex-carousel .circular-card[data-centered]:has(video){
+#media-frame.flex-carousel .gallery-video-card{
   width:min(100%,calc(var(--gallery-video-height) * 392 / 848));
-  height:100%;max-height:none
+  height:var(--gallery-video-height)
 }
-.gallery:has(#media-frame [data-centered] video) + .jersey{align-self:start}
+#media-frame .gallery-video-card video{
+  transform:scale(calc(.43 + .57 * var(--gallery-video-progress,0)));
+  transform-origin:center
+}
+#media-frame .gallery-video-card video:fullscreen{transform:none}
+.gallery:has(.gallery-video-card[data-centered]) + .jersey{align-self:start}
+@media(prefers-reduced-motion:no-preference){
+  #media-frame.gallery-video-enter{animation:gallery-video-enter .62s cubic-bezier(.2,.68,.24,1)}
+}
+@keyframes gallery-video-enter {
+  from{--gallery-video-progress:0}
+  to{--gallery-video-progress:1}
+}
 #media-frame .media-slide{border:0;border-radius:0;background:transparent}
 #media-frame .media-slide img,#media-frame video.media-slide{
   border-radius:12px;object-fit:contain;user-select:none;-webkit-user-drag:none
@@ -583,4 +600,53 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
   .hero-copy > p, .contact p {
     font-size: 1.0625rem;
   }
+}
+
+
+.gallery-dots {
+  --gallery-dot-step: 26px;
+  --gallery-dot-size: 8px;
+  --gallery-indicator-width: 19px;
+  width: max-content;
+  max-width: 100%;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--gallery-dot-step);
+  align-items: center;
+  margin: 6px auto 0;
+  color: var(--muted);
+}
+.gallery-dots::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc((var(--gallery-dot-step) - var(--gallery-indicator-width)) / 2);
+  width: var(--gallery-indicator-width);
+  height: var(--gallery-dot-size);
+  border-radius: 999px;
+  background: var(--blue);
+  pointer-events: none;
+  transform: translateX(calc(var(--gallery-active-dot, 0) * var(--gallery-dot-step)));
+}
+.gallery-dots button {
+  display: grid;
+  place-items: center;
+  width: var(--gallery-dot-step);
+  height: 30px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.gallery-dots button::before {
+  content: "";
+  width: var(--gallery-dot-size);
+  height: var(--gallery-dot-size);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .42;
+}
+.gallery-dots button:hover::before { opacity: 1 }
+.gallery-dots button:focus-visible { outline-offset: -2px; border-radius: 8px }
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-dots::after { transition: transform .36s cubic-bezier(.2,.7,.3,1) }
 }
