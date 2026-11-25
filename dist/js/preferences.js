@@ -238,10 +238,29 @@
     }
   }
 
-  window.STARK_UI = {t, localize, inEnglish, animateHeading};
+  const headingObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+      for (const {target, isIntersecting} of entries) {
+        if (!isIntersecting) continue;
+        headingObserver.unobserve(target);
+        target.classList.add('heading-in-view');
+      }
+    }, {threshold:.18})
+    : null;
+
+  function observeHeadings() {
+    if (!headingObserver) return;
+    document.querySelectorAll('main :is(h1,h2,h3,h4,h5,h6), dialog :is(h1,h2,h3,h4,h5,h6)')
+      .forEach(heading => {
+        if (!heading.classList.contains('heading-in-view')) headingObserver.observe(heading);
+      });
+  }
+
+  window.STARK_UI = {t, localize, inEnglish, animateHeading, observeHeadings};
 
   document.addEventListener('DOMContentLoaded', () => {
     localize(root);
+    observeHeadings();
     const description = document.querySelector('meta[name=description]');
     if (description) description.content = t(description.content);
     const languageButton = document.querySelector('[data-language]');

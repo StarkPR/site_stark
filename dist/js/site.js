@@ -1,6 +1,6 @@
 (() => {
   const $ = selector => document.querySelector(selector);
-  const {t, inEnglish, animateHeading} = window.STARK_UI;
+  const {t, inEnglish, animateHeading, observeHeadings} = window.STARK_UI;
   function el(tag, text, className) {
     const item = document.createElement(tag);
     if(text) item.textContent = t(text);
@@ -364,6 +364,7 @@
       tile.append(photo(supporter.imagem,supporter.nome));
       $('#supporters').append(tile);
     }
+    observeHeadings();
   }
   fetch($('meta[name=stark-content]').content).then(r=>{if(!r.ok)throw Error('Falha ao carregar os dados');return r.json();})
     .then(render).catch(()=>{const note=el('p','Não foi possível carregar o conteúdo da equipe. Recarregue a página.');$('#media-frame').append(note);});
