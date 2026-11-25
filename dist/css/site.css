@@ -305,3 +305,13 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 @media(max-width:760px){
   #award-list article:has(img){grid-template-columns:1fr}
 }
+
+.about-article-row + .about-article-row{
+  margin-top:clamp(28px,5vw,64px);padding-top:clamp(25px,4vw,50px);border-top:1px solid var(--edge)
+}
+.about-article-row .article-text h2{font-size:clamp(25px,2.6vw,40px);margin:1.1em 0 .45em}
+.about-article-row .article-text h2:first-child{margin-top:0}
+.about-article-row .article-text strong{color:var(--ink)}
+.about-article-row .article-text p:last-child{margin-bottom:0}
+.article-photos{display:grid;gap:16px}
+.article-photos img{height:auto;max-height:480px;object-fit:contain;object-position:center;background:var(--card)}
