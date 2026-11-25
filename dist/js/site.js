@@ -1,6 +1,6 @@
 (() => {
   const $ = selector => document.querySelector(selector);
-  const {t, inEnglish} = window.STARK_UI;
+  const {t, inEnglish, animateHeading} = window.STARK_UI;
   function el(tag, text, className) {
     const item = document.createElement(tag);
     if(text) item.textContent = t(text);
@@ -295,13 +295,25 @@
     const seasons = [...(data.temporadas || [])].sort((a, b) => b.ano - a.ano);
     for (const season of seasons) {
       const record = el('article');
-      record.append(el('h3', season.titulo || String(season.ano)));
+      const story = el('div', null, 'season-story');
+      story.append(el('h3', season.titulo || String(season.ano)));
       for (const paragraph of season.texto.split(/\n\s*\n/)) {
-        record.append(arenaParagraph(paragraph));
+        story.append(arenaParagraph(paragraph));
       }
+      record.append(story);
       if (season.robo?.length) {
+        record.classList.add('season-with-retrospective');
         const comparison = el('div', null, 'season-robots');
-        comparison.append(el('h4', 'Retrospectiva do J.A.R.V.I.S.'));
+        const banner = el('div', null, 'season-robot-banner');
+        const title = el('h4');
+        const label = el('span', 'Retrospectiva do J.A.R.V.I.S.');
+        title.append(label);
+        animateHeading(title, [label]);
+        const miniature = el('span', null, 'season-robot-mini');
+        miniature.setAttribute('aria-hidden', 'true');
+        miniature.append(el('span', null, 'season-mini-sensor'));
+        banner.append(title, miniature);
+        comparison.append(banner);
         season.robo.forEach((version, index) => {
           if (index) {
             const arrow = el('span', '↓', 'season-robot-arrow');

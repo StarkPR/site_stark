@@ -213,7 +213,32 @@
       }
     }
   }
-  window.STARK_UI = {t, localize, inEnglish};
+  function animateHeading(title, lines) {
+    title.setAttribute('aria-label', lines.map(line => line.textContent).join(' '));
+    for (const line of lines) {
+      const words = line.textContent.split(' ').map(word => {
+        const group = document.createElement('span');
+        group.className = 'hero-word';
+        for (const letter of word) {
+          const glyph = document.createElement('span');
+          glyph.className = 'hero-letter';
+          const ink = document.createElement('span');
+          ink.textContent = letter;
+          glyph.append(ink);
+          group.append(glyph);
+        }
+        return group;
+      });
+      line.setAttribute('aria-hidden', 'true');
+      line.replaceChildren();
+      words.forEach((word, index) => {
+        if (index) line.append(' ');
+        line.append(word);
+      });
+    }
+  }
+
+  window.STARK_UI = {t, localize, inEnglish, animateHeading};
 
   document.addEventListener('DOMContentLoaded', () => {
     localize(root);
@@ -292,27 +317,6 @@
     const title = document.querySelector('.hero-title h1');
     if (!title) return;
     const lines = [...title.querySelectorAll('[data-letters]')];
-    title.setAttribute('aria-label', lines.map(line => line.textContent).join(' '));
-    for (const line of lines) {
-      const words = line.textContent.split(' ').map(word => {
-        const group = document.createElement('span');
-        group.className = 'hero-word';
-        for (const letter of word) {
-          const glyph = document.createElement('span');
-          glyph.className = 'hero-letter';
-          const ink = document.createElement('span');
-          ink.textContent = letter;
-          glyph.append(ink);
-          group.append(glyph);
-        }
-        return group;
-      });
-      line.setAttribute('aria-hidden', 'true');
-      line.replaceChildren();
-      words.forEach((word, index) => {
-        if (index) line.append(' ');
-        line.append(word);
-      });
-    }
+    animateHeading(title, lines);
   });
 })();

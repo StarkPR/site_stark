@@ -316,15 +316,73 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 .article-photos{display:grid;gap:16px}
 .article-photos img{height:auto;max-height:480px;object-fit:contain;object-position:center;background:var(--card)}
 
+.season-with-retrospective{display:grid;gap:28px}
+.season-story{min-width:0}
 .season-robots{
-  display:grid;justify-items:center;gap:14px;width:min(100%,68ch);
-  margin-top:28px;padding-top:24px;border-top:1px solid var(--edge)
+  --season-glow:#a6d6ff;
+  display:grid;justify-items:center;align-content:start;gap:14px;min-width:0;
+  padding-top:24px;border-top:1px solid var(--edge)
 }
-.season-robots h4{margin:0 0 4px;font-size:clamp(20px,2.4vw,28px);text-align:center}
+@media(min-width:900px){
+  .season-with-retrospective{
+    grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start;
+    gap:clamp(28px,4vw,64px)
+  }
+  .season-robots{padding-top:0;border-top:0}
+}
+.season-robot-banner{
+  position:relative;isolation:isolate;display:grid;place-items:center;
+  width:min(100%,420px);min-height:93px;padding:18px 32px;
+  border-block:1px solid var(--edge);
+  background:radial-gradient(ellipse at 50% 45%,#549af42e,transparent 74%);
+  text-align:center
+}
+.season-robots h4{
+  margin:0;font-size:clamp(21px,2.5vw,31px);line-height:1.15;letter-spacing:-.03em;
+  color:var(--season-glow);text-shadow:0 0 .5em #419bff80,0 0 1.3em #419bff68
+}
+[data-theme=light] .season-robots{--season-glow:#124675}
 .season-robots figure{
   width:min(100%,420px);margin:0;padding:14px;border:1px solid var(--edge);
-  border-radius:12px;background:var(--navy);text-align:center
+  border-radius:12px;background:radial-gradient(ellipse at 50% 38%,var(--card),var(--navy));text-align:center
 }
 .season-robots img{display:block;width:100%;aspect-ratio:3/2;object-fit:contain}
-.season-robots figcaption{margin-top:10px;font-weight:600;color:var(--ink)}
+.season-robots figcaption{position:relative;margin-top:10px;font-weight:600;color:var(--ink)}
 .season-robot-arrow{color:var(--blue);font-size:26px;line-height:1}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .season-robots img{transition:transform .28s ease,filter .28s ease}
+  .season-robots img:hover{transform:translateY(-5px) scale(1.075);filter:drop-shadow(0 9px 11px #449cfb50)}
+}
+
+/* A frente do robô estadual, com alça, esteiras e os dois sensores. */
+.season-robot-mini{
+  position:absolute;z-index:1;top:22%;left:9%;width:30px;height:20px;
+  border-radius:5px;pointer-events:none;filter:drop-shadow(0 0 5px #419bff90);
+  transform:translate(-50%,-50%);background:#e0ab34
+}
+.season-robot-mini::before{
+  content:"";position:absolute;inset:-6px 5px auto;height:11px;
+  border:3px solid #182333;border-bottom:0;border-radius:4px 4px 0 0
+}
+.season-robot-mini::after{
+  content:"";position:absolute;inset:7px auto 0 -3px;width:6px;border-radius:3px;
+  background:#313f50;box-shadow:30px 0 #313f50,-2px 3px #db4851,32px 3px #db4851
+}
+.season-mini-sensor{
+  position:absolute;z-index:1;inset:7px 4px 2px;border:1px solid #94afc4;border-radius:4px;
+  background:radial-gradient(circle at 27% 50%,#142237 0 2.5px,transparent 3px),
+    radial-gradient(circle at 73% 50%,#142237 0 2.5px,transparent 3px),#c4dceb
+}
+@media(prefers-reduced-motion:no-preference){
+  .season-robot-mini{animation:season-mini-flight 10s ease-in-out infinite}
+}
+@media(prefers-reduced-motion:reduce){
+  .season-robot-mini{display:none}
+}
+@keyframes season-mini-flight{
+  0%,100%{left:8%;top:24%;transform:translate(-50%,-50%) rotate(-13deg)}
+  23%{left:53%;top:10%;transform:translate(-50%,-50%) rotate(9deg) scale(.94)}
+  46%{left:92%;top:29%;transform:translate(-50%,-50%) rotate(19deg)}
+  62%{left:88%;top:75%;transform:translate(-50%,-50%) rotate(-10deg)}
+  82%{left:33%;top:87%;transform:translate(-50%,-50%) rotate(-17deg) scale(.94)}
+}
