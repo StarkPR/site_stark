@@ -259,3 +259,33 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
   content:"";position:absolute;top:50%;left:50%;width:7px;aspect-ratio:1;transform:translate(-50%,-50%);
   border-radius:50%;background:linear-gradient(26deg,#19387c 42%,#fff 43% 57%,#19387c 58%)
 }
+
+.hero-background{position:absolute;inset:0;pointer-events:none}
+.hero-background img{
+  position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;
+  object-position:center 62%;opacity:0;transform:scale(1.04);
+  transition:opacity 1.35s ease,transform 8.5s ease-out
+}
+.hero-background img:nth-child(2){object-position:center 66%}
+.hero-background img:nth-child(3){object-position:center 69%}
+.hero-background img[data-current]{opacity:1;transform:scale(1)}
+.hero-background::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,#09162ef7,#0b1931e8 42%,#0b193184 76%,#09162e88),
+    linear-gradient(0deg,#09162ee0,transparent 32%)
+}
+.hero-inner{position:relative}
+[data-theme=light] .hero-background::after{
+  background:linear-gradient(90deg,#fffffff9,#fffffff2 42%,#f3f7fb80 76%,#f3f7fb80),
+    linear-gradient(0deg,#f5f8fbe8,transparent 32%)
+}
+@media(max-width:760px){
+  .hero-background::after{background:linear-gradient(145deg,#09162ef5,#0b1931de 53%,#09162ec4)}
+  [data-theme=light] .hero-background::after{background:linear-gradient(145deg,#fffffff9,#ffffffe8 53%,#f5f8fbc7)}
+}
+.hero-robot{
+  pointer-events:auto;cursor:grab;touch-action:none;user-select:none;
+  -webkit-user-select:none
+}
+.hero-robot[data-detached]{position:fixed;z-index:14}
+.hero-robot[data-grabbed]{cursor:grabbing}
