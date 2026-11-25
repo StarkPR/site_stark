@@ -1,3 +1,18 @@
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("../assets/fonts/barlow-semi-condensed-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  src: url("../assets/fonts/barlow-semi-condensed-700.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root{color-scheme:dark;--navy:#08152c;--deep:#070f20;--card:#101e36;--edge:#273750;--ink:#f7f8fc;--blue:#92bbf8;--muted:#b2bfd3;--soft:#8497b2;--mono:"Courier New",monospace;--sans:"Roboto","Helvetica Neue",Arial,sans-serif;--uniforme-altura:360px}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:95px}body{margin:0;background:var(--deep);color:var(--ink);font:16px/1.55 var(--sans)}button,a{font:inherit}a{color:inherit;text-decoration:none}button{cursor:pointer;color:inherit}button:disabled{cursor:default}a:focus-visible,button:focus-visible,canvas:focus-visible,[tabindex]:focus-visible{outline:3px solid #a9cdff;outline-offset:4px}svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}.defs{position:absolute;width:0;height:0;overflow:hidden}.skip{position:fixed;top:-120px;left:10px;z-index:20;background:white;color:black;padding:12px}.skip:focus{top:4px}.wrap{width:min(1280px,89%);margin:auto}
 .header{position:sticky;top:0;z-index:6;background:#081429f7;border-bottom:1px solid #293752;backdrop-filter:blur(12px)}.header-row{min-height:79px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:block;width:147px;height:51px;position:relative;overflow:hidden;flex:none}.brand img{width:105%;height:auto;position:absolute;left:-2.8%;top:-22%;filter:url(#tinta-branca)}nav{display:flex;align-items:center;gap:clamp(12px,2vw,33px)}nav a{color:#becadd;font-size:14px;font-weight:500;position:relative;white-space:nowrap}nav a[aria-current]{color:white}nav a[aria-current]:not(.nav-contact)::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:var(--blue);left:50%;bottom:-11px}nav a:hover,.text-link:hover,footer a:hover{color:var(--blue)}.nav-contact{display:flex;align-items:center;gap:13px;border:1px solid #43536d;border-radius:6px;padding:8px 15px;margin-left:4px;color:white}.nav-contact svg{width:14px;height:14px}.menu-toggle{display:none}
@@ -509,4 +524,15 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
 }
 #gallery-play[data-playing]::before{
   clip-path:none;background:linear-gradient(90deg,currentColor 0 34%,transparent 34% 66%,currentColor 66%);
+}
+
+:is(main, dialog) :is(h1, h2, h3, h4, h5, h6):not(.hero h1, .contact h2) {
+  font-family: "Barlow Semi Condensed", var(--sans);
+  font-weight: var(--section-title-weight, 600);
+  letter-spacing: var(--section-title-spacing, 0);
+}
+
+:is(main, dialog) :is(h1, h2, .season-story h3, .season-robots h4) {
+  --section-title-weight: 700;
+  --section-title-spacing: -.02em;
 }
