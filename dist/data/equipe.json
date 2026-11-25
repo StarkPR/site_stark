@@ -1,0 +1,103 @@
+{
+  "sobre": {
+    "quem": "inserir texto",
+    "fundacao": "",
+    "visao": "inserir texto",
+    "missao": "inserir texto",
+    "valores": "inserir texto"
+  },
+  "galeria": [
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/perfil-um.jpg",
+      "legenda": "Uniforme da Stark · vista lateral"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/perfil-dois.jpg",
+      "legenda": "Uniforme da Stark · manga oposta"
+    },
+    {
+      "tipo": "video",
+      "arquivo": "",
+      "legenda": "Vídeo da equipe"
+    },
+    {
+      "tipo": "video",
+      "arquivo": "",
+      "legenda": "Vídeo da equipe · 02"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "",
+      "legenda": "Foto da equipe · 03"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "",
+      "legenda": "Foto da equipe · 04"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "",
+      "legenda": "Foto da equipe · 05"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "",
+      "legenda": "Foto da equipe · 06"
+    }
+  ],
+  "competicoes": [
+    {
+      "sigla": "OBR",
+      "nome": "Olimpíada Brasileira de Robótica",
+      "texto": "Na modalidade de resgate, o robô percorre a pista de forma autônoma e encontra as vítimas na zona de resgate.",
+      "conquistas": "",
+      "imagem": "assets/apoiadores/obr.png"
+    }
+  ],
+  "integrantes": [
+    {
+      "nome": "SOUZA",
+      "funcao": "MONTADOR",
+      "foto": "",
+      "instagram": "https://www.instagram.com/_dsouz?evlk=MXRoOTZydzZ0ZTYxag=="
+    },
+    {
+      "nome": "CAIO",
+      "funcao": "PROGRAMADOR",
+      "foto": "",
+      "instagram": "https://www.instagram.com/caio_miguel_vieira?avpt=MTEycXhsMmN5OHk5bw=="
+    },
+    {
+      "nome": "ISADORA",
+      "funcao": "GESTÃO E MARKETING",
+      "foto": "",
+      "instagram": "https://www.instagram.com/matias_1sa?bqrl=d2JoYm9qZ3dpbWx3"
+    },
+    {
+      "nome": "GUILHERME",
+      "funcao": "GESTÃO",
+      "foto": "",
+      "instagram": "https://www.instagram.com/ei.gu1lherme?fqnt=MTdtN2x6eHlsN3phYQ=="
+    }
+  ],
+  "diario": [],
+  "premios": [],
+  "robo": {
+    "tipo": "",
+    "componentes": "",
+    "programacao": ""
+  },
+  "apoiadores": [
+    {
+      "nome": "OBR",
+      "imagem": "assets/apoiadores/obr.png"
+    },
+    {
+      "nome": "SESI",
+      "imagem": "assets/apoiadores/sesi.jpg"
+    }
+  ]
+}
