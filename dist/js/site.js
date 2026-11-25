@@ -105,7 +105,7 @@
     function setPlaying(value) {
       playing = value;
       const label = t(playing ? 'Pausar rotação' : 'Iniciar rotação');
-      player.textContent = playing ? 'Ⅱ' : '▶';
+      player.toggleAttribute('data-playing', playing);
       player.setAttribute('aria-label', label);
       player.title = label;
       $('#gallery-count').setAttribute('aria-live', playing ? 'off' : 'polite');

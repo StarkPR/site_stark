@@ -506,3 +506,11 @@ dialog.uniform-dialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width
   font:400 var(--secondary-heading-size)/1.5 Inter,var(--sans);
   letter-spacing:0
 }
+
+#gallery-play::before{
+  content:"";width:11px;height:12px;background:currentColor;
+  clip-path:polygon(10% 0,100% 50%,10% 100%)
+}
+#gallery-play[data-playing]::before{
+  clip-path:none;background:linear-gradient(90deg,currentColor 0 34%,transparent 34% 66%,currentColor 66%);
+}
