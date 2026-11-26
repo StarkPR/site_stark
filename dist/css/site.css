@@ -82,7 +82,7 @@ nav.article-nav{display:flex;position:static;flex-wrap:wrap;padding:20px 0;borde
 .inspector-ui{border-top:1px solid #344762;background:#0d1b30}.inspector-ui p{font-size:14px;color:var(--muted);margin:0 0 10px}.inspector-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.inspector-tools label{display:grid;gap:3px}.inspector-tools select{font:500 15px var(--sans);color:var(--ink);background:#172a45;border:1px solid #496686;border-radius:6px;padding:8px;max-width:70vw}.inspector-tools .btn{min-height:38px;padding:8px 12px}
 @media(max-width:760px){.article-layout{grid-template-columns:1fr}.inspector-header,.inspector-ui{padding:10px 14px}.inspector-tools{gap:6px}.inspector-tools .btn{font-size:12px}}
 
-.jersey #camisa3d { --uniforme-altura: 295px }
+.jersey #camisa3d { --uniforme-altura: var(--showcase-height, 295px) }
 #camisa3d {
   border: 1px solid var(--edge);
   border-radius: 12px;
@@ -653,7 +653,7 @@ dialog.uniform-dialog {
   --story-track: #3b4c65;
   --story-edge: #334763;
   --story-surface: #111f34;
-  padding: 8px clamp(8px, 1.5vw, 15px) 10px;
+  padding: var(--showcase-padding, 8px 12px 10px);
   border: 1px solid var(--story-edge);
   border-radius: 20px;
   background: radial-gradient(circle, #84bdff12 1px, transparent 1.6px) top right / 8px 8px,
@@ -707,8 +707,7 @@ dialog.uniform-dialog {
   display: grid;
   position: relative;
   isolation: isolate;
-  aspect-ratio: 1;
-  max-height: min(70svh, 620px);
+  height: var(--showcase-height);
   overflow: hidden;
   border: 1px solid var(--story-edge);
   border-radius: 14px;
@@ -779,7 +778,35 @@ dialog.uniform-dialog {
   line-height: 1.3;
 }
 .gallery-footer #gallery-play { width: 36px; height: 36px }
-.gallery + .jersey { align-self: start }
+#galeria .duo {
+  --showcase-inset: clamp(8px, 1.5vw, 15px);
+  --showcase-padding: 8px var(--showcase-inset) 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 0;
+}
+#galeria .panel {
+  container-type: inline-size;
+  --showcase-height: clamp(230px, 92cqi, min(490px, 64svh));
+}
+#galeria #camisa3d {
+  padding: var(--showcase-padding);
+  border-radius: 20px;
+}
+#galeria .panel-top { min-height: 1.55rem }
+#galeria .jersey .uniform-stage { border: 1px solid var(--edge); border-radius: 14px }
+#galeria .jersey .uniform-controls { border-top: 0; padding: 5px 0 0 }
+
+@media (min-width: 761px) {
+  #galeria .panel {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+  }
+  #galeria .jersey .uniform-view { margin-top: 28px }
+}
+@media (max-width: 760px) {
+  #galeria .duo { grid-template-columns: minmax(0, 1fr); row-gap: 18px }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .gallery-slides[data-animate] .gallery-slide[data-centered] {
