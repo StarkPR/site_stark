@@ -1,0 +1,118 @@
+{
+  "sobre": {
+    "quem": "Somos a STARK, equipe de robótica do SESI Apucarana. Movidos pela inovação, transformamos tecnologia e conhecimento em novos desafios.",
+    "fundacao": "",
+    "visao": "Ser referência em inovação e robótica, inspirando novos talentos e construindo um legado de conhecimento, evolução e excelência que ultrapasse gerações.",
+    "missao": "Transformar a paixão pela robótica em inovação e aprendizado, desenvolvendo soluções tecnológicas, incentivando o trabalho em equipe e formando novos talentos para dar continuidade ao legado STARK.",
+    "valores": "Valorizamos a inovação, o respeito, a dedicação e o trabalho em equipe. Acreditamos no aprendizado contínuo, na união e no compartilhamento de conhecimentos para construir um legado que ultrapasse gerações."
+  },
+  "galeria": [
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/equipe-na-competicao.webp",
+      "legenda": "Equipe STARK"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/robo-com-farois.webp",
+      "legenda": "Nosso J.A.R.V.I.S. 2026"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/credenciais.webp",
+      "legenda": "Credenciais da equipe no Salão de Robótica"
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/integrante-com-robo.webp",
+      "legenda": "Integrante da STARK prestes a entrar para a pista."
+    },
+    {
+      "tipo": "foto",
+      "arquivo": "assets/galeria/programacao.webp",
+      "legenda": "Equipe STARK programando nos bastidores"
+    },
+    {
+      "tipo": "video",
+      "arquivo": "assets/galeria/bastidores.mp4",
+      "legenda": "STARK recebendo a premiação de melhor escola privada."
+    }
+  ],
+  "competicoes": [
+    {
+      "sigla": "OBR",
+      "nome": "Olimpíada Brasileira de Robótica",
+      "texto": "A **Olimpíada Brasileira de Robótica (OBR)** é uma competição nacional que incentiva estudantes a desenvolverem conhecimentos em ciência, tecnologia e programação. Na modalidade prática, equipes projetam e programam robôs autônomos capazes de superar desafios, como seguir linhas, desviar de obstáculos e realizar resgates simulados. A OBR estimula a criatividade, a inovação, o raciocínio lógico e o trabalho em equipe, preparando jovens para os desafios da tecnologia.",
+      "conquistas": "",
+      "imagem": "assets/apoiadores/obr.png"
+    }
+  ],
+  "integrantes": [
+    {
+      "nome": "SOUZA",
+      "funcao": "MONTADOR",
+      "foto": "",
+      "instagram": "https://www.instagram.com/_dsouz?evlk=MXRoOTZydzZ0ZTYxag=="
+    },
+    {
+      "nome": "CAIO",
+      "funcao": "PROGRAMADOR",
+      "foto": "",
+      "instagram": "https://www.instagram.com/caio_miguel_vieira?avpt=MTEycXhsMmN5OHk5bw=="
+    },
+    {
+      "nome": "ISADORA",
+      "funcao": "GESTÃO E MARKETING",
+      "foto": "",
+      "instagram": "https://www.instagram.com/matias_1sa?bqrl=d2JoYm9qZ3dpbWx3"
+    },
+    {
+      "nome": "GUILHERME",
+      "funcao": "GESTÃO",
+      "foto": "",
+      "instagram": "https://www.instagram.com/ei.gu1lherme?fqnt=MTdtN2x6eHlsN3phYQ=="
+    }
+  ],
+  "diario": [],
+  "premios": [
+    {
+      "texto": "Na temporada 2026 da **Olimpíada Brasileira de Robótica (OBR)**, a equipe **STARK** conquistou o **4º lugar na categoria Resgate Nível 2 (N2)**, além de receber o prêmio de **Melhor Escola Privada** da categoria. Essa conquista representa a dedicação, o trabalho em equipe e o compromisso da STARK com a inovação e a robótica.",
+      "imagem": "assets/competicoes/premio-obr-2026.webp",
+      "alt": "Prêmio de Melhor Escola Privada da OBR 2026 com a medalha da equipe STARK"
+    }
+  ],
+  "robo": {
+    "tipo": "",
+    "componentes": "",
+    "programacao": ""
+  },
+  "apoiadores": [
+    {
+      "nome": "OBR",
+      "imagem": "assets/apoiadores/obr.png"
+    },
+    {
+      "nome": "SESI",
+      "imagem": "assets/apoiadores/sesi.jpg"
+    }
+  ],
+  "temporadas": [
+    {
+      "ano": 2026,
+      "texto": "A temporada 2026 marcou o início da trajetória da STARK na Olimpíada Brasileira de Robótica (OBR). Nossa jornada começou em um amistoso realizado em Londrina, onde enfrentamos uma das situações mais difíceis da temporada. Com apenas **130 pontos**, terminamos entre as últimas equipes da competição. Foi um resultado desanimador, mas que nos mostrou o quanto ainda precisávamos evoluir.\n\nNo dia **20 de junho**, chegamos à etapa regional com uma postura completamente diferente. Após semanas de dedicação, foco e melhorias na programação do robô, conseguimos uma evolução significativa. Todo o esforço se transformou em resultado: conquistamos o **9º lugar**, garantindo nossa classificação para a etapa estadual da OBR, na categoria Resgate Nível 2 (N2).\n\nEm **4 de setembro**, chegou o momento mais importante da nossa temporada: a etapa estadual. Mesmo sendo nosso primeiro ano como equipe, entramos na competição determinados a superar nossos próprios limites. E foi exatamente o que aconteceu. Surpreendemos as expectativas, alcançamos as primeiras posições da classificação e permanecemos entre os **dois melhores colocados durante grande parte da competição**.\n\nAo final, conquistamos o **4º lugar estadual**, além do nosso primeiro prêmio: **Melhor Escola Privada da categoria Resgate N2**. Um resultado que, meses antes, parecia distante da nossa realidade.\n\nMais do que posições e premiações, 2026 foi o ano em que aprendemos a transformar dificuldades em evolução. Começamos entre os últimos e terminamos entre os melhores, mostrando que dedicação, persistência e trabalho em equipe podem transformar resultados.\n\n**2026 não foi apenas nossa primeira temporada. Foi o começo da história que queremos construir.**",
+      "titulo": "Temporada 2026 — O Início de um Legado",
+      "robo": [
+        {
+          "imagem": "assets/competicoes/robo-regional.webp",
+          "legenda": "Regional",
+          "alt": "Robô da etapa regional, sem alça e com detalhes azuis"
+        },
+        {
+          "imagem": "assets/competicoes/robo-estadual.webp",
+          "legenda": "Estadual",
+          "alt": "Robô da etapa estadual, com alça e detalhes vermelhos"
+        }
+      ]
+    }
+  ]
+}

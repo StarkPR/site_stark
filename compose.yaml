@@ -1,0 +1,16 @@
+services:
+  catalogo:
+    image: eclipse-temurin:21-jdk
+    working_dir: /site
+    volumes:
+      - ./backend/java:/site/backend/java:ro
+      - ./dist/data:/site/dist/data:ro
+    command: ["java", "backend/java/Catalogo.java"]
+  site:
+    image: php:8.3-apache
+    depends_on: [catalogo]
+    ports: ["127.0.0.1:8080:80"]
+    volumes:
+      - ./dist:/var/www/html:ro
+      - ./backend/php/index.php:/var/www/html/index.php:ro
+      - ./backend/php/inicio.conf:/etc/apache2/conf-enabled/stark.conf:ro
