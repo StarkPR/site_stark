@@ -4,31 +4,39 @@
   const root = document.getElementById('camisa3d');
   if (!root) return;
   const assets = new URL('../assets/uniforme/', document.currentScript.src);
-  const css = document.createElement('style');
-  css.textContent = `
-    #camisa3d { position:relative; width:100%; color:#11274a; }
-    #camisa3d .uniform-stage {position:relative;display:grid;place-items:center;width:100%;height:var(--uniforme-altura,360px);min-height:230px;overflow:hidden;outline-offset:-3px;cursor:grab;touch-action:none}
-    #camisa3d .uniform-stage:active {cursor:grabbing}
-    #camisa3d .uniform-stage::before {content:"";position:absolute;bottom:3%;left:28%;width:44%;height:5%;border-radius:50%;background:radial-gradient(ellipse,rgba(14,36,65,.18),transparent 67%);pointer-events:none}
-    #camisa3d canvas,#camisa3d .uniform-poster {position:absolute;height:100%;width:100%;object-fit:contain;user-select:none;pointer-events:none}
-    #camisa3d .uniform-controls {display:flex;justify-content:center;align-items:center;gap:.3rem;margin:.25rem auto 0}
-    #camisa3d .uniform-controls button {font:600 12px/1.1 system-ui,sans-serif;letter-spacing:.02em;border:1px solid #a7bbcb;border-radius:999px;color:#11274a;background:#f5f9fc;min-width:44px;min-height:38px;padding:7px 13px;cursor:pointer}
-    #camisa3d .uniform-controls button:hover,#camisa3d .uniform-controls button:focus-visible {background:#d9e7f2}
-    #camisa3d .uniform-stage:focus-visible,#camisa3d .uniform-controls button:focus-visible {outline:3px solid #397aa6}
-    #camisa3d [hidden] {display:none}
+  root.innerHTML = `
+    <div class="uniform-view">
+      <div class="uniform-stage" tabindex="0" role="group" aria-label="Camisa da STARK em 3D. Arraste ou use as setas do teclado para girar.">
+        <img class="uniform-poster" alt="Uniforme azul-marinho da STARK, com os escudos da equipe e do SESI." draggable="false">
+        <canvas hidden aria-hidden="true"></canvas>
+      </div>
+    </div>
+    <div class="uniform-controls" role="group" aria-label="Controles do uniforme">
+      <div class="uniform-rotation"></div>
+      <div class="uniform-views" role="group" aria-label="Vistas da camisa"></div>
+      <div class="uniform-extra" hidden></div>
+    </div>
   `;
-  document.head.append(css);
-  root.innerHTML = '<div class="uniform-stage" tabindex="0" role="group" aria-label="Camisa da STARK em 3D. Arraste ou use as setas do teclado para girar."><img class="uniform-poster" alt="Uniforme azul-marinho da STARK, com os escudos da equipe e do SESI." draggable="false"><canvas hidden aria-hidden="true"></canvas></div><div class="uniform-controls" aria-label="Vistas da camisa"></div>';
   const stage = root.querySelector('.uniform-stage');
   const poster = root.querySelector('img');
   const canvas = root.querySelector('canvas');
-  const bar = root.querySelector('.uniform-controls');
+  const rotation = root.querySelector('.uniform-rotation');
+  const views = root.querySelector('.uniform-views');
+  const extra = root.querySelector('.uniform-extra');
   const turn = Math.PI * 2;
   let yaw = 0, pitch = 0, gpuRender, drawRequest = 0, lastFrame = -1;
+  let activeView = 'front';
   const normalize = angle => (angle % turn + turn) % turn;
   function change(horizontal, vertical = 0) {
     yaw = normalize(horizontal);
     pitch = Math.max(-0.95, Math.min(0.95, vertical));
+    const view = Math.abs(pitch) > .035 ? '' :
+      Math.min(yaw, turn - yaw) < .035 ? 'front' : Math.abs(yaw - Math.PI) < .035 ? 'back' : '';
+    if (view !== activeView) {
+      activeView = view;
+      front.setAttribute('aria-pressed', String(view === 'front'));
+      back.setAttribute('aria-pressed', String(view === 'back'));
+    }
     if (!drawRequest) drawRequest = requestAnimationFrame(render);
   }
   function render() {
@@ -43,15 +51,33 @@
       lastFrame = frame;
     }
   }
-  function button(label, title, action) {
+  function button(group, label, title, action, symbol) {
     const b = document.createElement('button');
-    b.type = 'button'; b.textContent = label; b.setAttribute('aria-label', title);
-    b.addEventListener('click', action); bar.append(b); return b;
+    b.type = 'button';
+    b.setAttribute('aria-label', title);
+    b.title = title;
+    if (symbol) {
+      const ns = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(ns, 'svg');
+      const use = document.createElementNS(ns, 'use');
+      svg.setAttribute('aria-hidden', 'true');
+      use.setAttribute('href', '#' + symbol);
+      svg.append(use);
+      b.append(svg);
+    } else {
+      b.textContent = label;
+    }
+    b.addEventListener('click', action);
+    group.append(b);
+    return b;
   }
-  button('↶', 'Girar a camisa para a esquerda', () => change(yaw - turn / 8, pitch));
-  button('Frente', 'Ver a frente da camisa', () => change(0));
-  button('Costas', 'Ver as costas da camisa', () => change(Math.PI));
-  button('↷', 'Girar a camisa para a direita', () => change(yaw + turn / 8, pitch));
+  button(rotation, '', 'Girar a camisa para a esquerda', () => change(yaw - turn / 8, pitch), 'move');
+  const right = button(rotation, '', 'Girar a camisa para a direita', () => change(yaw + turn / 8, pitch), 'move');
+  right.classList.add('uniform-turn-right');
+  const front = button(views, 'Frente', 'Ver a frente da camisa', () => change(0));
+  const back = button(views, 'Costas', 'Ver as costas da camisa', () => change(Math.PI));
+  front.setAttribute('aria-pressed', 'true');
+  back.setAttribute('aria-pressed', 'false');
   stage.addEventListener('keydown', event => {
     const keys = {
       ArrowLeft: () => change(yaw - turn / 16, pitch), ArrowRight: () => change(yaw + turn / 16, pitch),
@@ -86,6 +112,7 @@
     lastTime = null;
     spin.textContent = window.STARK_UI.t(rotating ? 'Pausar giro' : 'Girar');
     spin.setAttribute('aria-label',spin.textContent);
+    spin.title = spin.textContent;
     if (!dialog.open || !rotating || pointers.size || document.hidden) return;
     function step(now) {
       if (lastTime !== null) change(yaw + Math.min(now-lastTime,70)*.00032,pitch);
@@ -98,29 +125,28 @@
     if (document.fullscreenElement === surface) document.exitFullscreen().catch(()=>{});
     if (dialog.open) dialog.close();
   }
-  const expand = button('Tela cheia', 'Abrir uniforme em tela cheia', () => {
+  const expand = button(root.querySelector('.uniform-view'), '', 'Abrir uniforme em tela cheia', () => {
     surface.append(root);
     expand.hidden = true;
-    extra.forEach(b=>b.hidden=false);
+    extra.hidden = false;
     dialog.showModal();
     stage.focus({preventScroll:true});
     setZoom(1);
     rotating = !motion.matches;
     syncSpin();
     if (surface.requestFullscreen) surface.requestFullscreen().catch(()=>{});
-  });
-  const minus = button('−','Diminuir zoom',()=>setZoom(zoom/1.2));
-  const plus = button('+','Aumentar zoom',()=>setZoom(zoom*1.2));
-  const spin = button('Pausar giro','Pausar giro',()=>{rotating=!rotating;syncSpin();});
-  const exit = button('Fechar','Sair da tela cheia',close);
-  const extra = [minus,plus,spin,exit];
-  extra.forEach(b=>b.hidden=true);
+  }, 'fullscreen');
+  expand.className = 'uniform-expand';
+  button(extra,'−','Diminuir zoom',()=>setZoom(zoom/1.2));
+  button(extra,'+','Aumentar zoom',()=>setZoom(zoom*1.2));
+  const spin = button(extra,'Pausar giro','Pausar giro',()=>{rotating=!rotating;syncSpin();});
+  button(extra,'Fechar','Sair da tela cheia',close);
   dialog.addEventListener('cancel',e=>{e.preventDefault();close();});
   dialog.addEventListener('close',()=>{
     pointers.clear();
     rotating=false;syncSpin();
     placeholder.after(root);
-    extra.forEach(b=>b.hidden=true);
+    extra.hidden = true;
     expand.hidden=false;setZoom(1);
     expand.focus({preventScroll:true});
   });

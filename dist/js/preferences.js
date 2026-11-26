@@ -78,6 +78,7 @@
     'Conheça o J.A.R.V.I.S': 'Meet J.A.R.V.I.S',
     'Contato': 'Contact',
     'Costas': 'Back',
+    'Controles do uniforme': 'Jersey controls',
     'Credenciais da equipe no Salão de Robótica': 'Team badges at the Robotics Show',
     'Cubo 3D de referência': '3D reference cube',
     'Cubo 3D de referência. Arraste ou use as teclas de seta para girar.': '3D reference cube. Drag or use the arrow keys to rotate.',
